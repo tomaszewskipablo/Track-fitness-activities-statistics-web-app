@@ -1,0 +1,195 @@
+﻿@page "/signup"
+
+
+@inject NavigationManager NavigationManager
+@inject HttpClient http
+
+<div class="float-right"><MatButton Outlined="true" @onclick="NavigateToLogin">Login</MatButton></div>
+
+<p>
+    <MatTextField @bind-Value="@_userName" @oninput="(x=> _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="assignment_ind"></MatTextField>
+    <MatTextField @bind-Value="@_email" @oninput="(x=> _email = (string)x.Value)" Label="Email" Outlined="true" Icon="assignment_ind"></MatTextField>
+</p>
+<p>
+    <MatTextField @bind-Value="@_password" @oninput="(x=> _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="how_to_reg" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
+</p>
+<p>
+    <MatTextField @bind-Value="@_firstName" @oninput="(x=> _firstName = (string)x.Value)" Label="First name" Outlined="true" Icon="assignment_ind"></MatTextField>
+    <MatTextField @bind-Value="@_lastName" @oninput="(x=> _lastName = (string)x.Value)" Label="Last name" Outlined="true" Icon="assignment_ind"></MatTextField>
+</p>
+<p>
+    <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
+    </MatRadioGroup>
+    <MatDatePicker @bind-Value="@DateOfBirth" Label="Date of birth"></MatDatePicker>
+
+</p>
+<p>
+    <MatTextField @bind-Value="@Height" Label="Height" Outlined="true" Icon="assignment_ind"></MatTextField>
+    <MatTextField @bind-Value="@Weight" Label="Weight" Outlined="true" Icon="assignment_ind"></MatTextField>
+</p>
+
+<p>
+    <MatTextField @bind-Value="@Hrmax" Label="Heart Rate max" Outlined="true" Icon="assignment_ind"></MatTextField>
+    <MatTextField @bind-Value="@AverageCalories" Label="Average calories per day" Outlined="true" Icon="assignment_ind"></MatTextField>
+</p>
+<p>
+    <MatButton Outlined="true" Icon="done_outline" @onclick="Log">Sign in</MatButton>
+</p>
+<br />
+<p>
+    <div class="alert @_statusClass">@_errorLogin</div>
+</p>
+<p>@Height</p>
+
+@code
+     {
+    private string _statusClass;
+    private string _password = "";
+    private string _errorLogin;
+    private string _userName = "";
+    private string _email = "";
+    private string _firstName = "";
+    private string _lastName = "";
+    private int _height;
+    private int _weight;
+    private int _hrmax;
+    private int _averageCalories;
+    public DateTime? DateOfBirth { get; set; }
+
+    Gender genderChoosen;
+
+    public class Gender
+    {
+        public string Name { get; set; }
+        public bool IsMale { get; set; }
+
+
+        public Gender(string name, bool isMale)
+        {
+            Name = name;
+            IsMale = isMale;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
+    Gender[] gender = new[]
+    {
+            new Gender("Male", true),
+            new Gender("Female", false),
+        };
+
+    public string UserName
+    {
+        get => _userName;
+        set
+        {
+            _userName = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public string Password
+    {
+        get => _password;
+        set
+        {
+            _password = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public string Email
+    {
+        get => _email;
+        set
+        {
+            _email = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public string FirstName
+    {
+        get => _firstName;
+        set
+        {
+            _password = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public string LastName
+    {
+        get => _lastName;
+        set
+        {
+            _lastName = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public int Height
+    {
+        get => _height;
+        set
+        {
+            if (value != 0)
+            {
+                _height = value;
+            }
+            this.StateHasChanged();
+        }
+    }
+
+    public int Weight
+    {
+        get => _weight;
+        set
+        {
+            _weight = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public int Hrmax
+    {
+        get => _hrmax;
+        set
+        {
+            _hrmax = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public int AverageCalories
+    {
+        get => _averageCalories;
+        set
+        {
+            _averageCalories = value;
+            this.StateHasChanged();
+        }
+    }
+
+    private void KeyWasPressed(KeyboardEventArgs args)
+    {
+
+        if (args.Key == "Enter")
+        {
+            this.StateHasChanged();
+            Log();
+        }
+    }
+    private async Task Log()
+    {
+    }
+
+    void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

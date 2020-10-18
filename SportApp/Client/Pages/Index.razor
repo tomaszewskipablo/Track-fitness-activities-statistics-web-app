@@ -1,7 +1,66 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+@inject NavigationManager NavigationManager
+@inject HttpClient http
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="float-right"><MatButton Outlined="true" @onclick="NavigateToSignup">Sign up</MatButton></div>
+
+<p>
+    <MatTextField @bind-Value="@_userName" @oninput="(x=> _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="assignment_ind" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
+</p>
+<p>
+    <MatTextField @bind-Value="@_password" @oninput="(x=> _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="how_to_reg" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
+</p>
+<p>
+    <MatButton Outlined="true" Icon="done_outline" @onclick="Log">Sign in</MatButton>
+</p>
+<br />
+<p>
+    <div class="alert @_statusClass">@_errorLogin</div>
+</p>
+@code
+     {
+    private string _statusClass;
+    private string _password = "";
+    private string _errorLogin;
+    private string _userName = "";
+
+    public string UserName
+    {
+        get => _userName;
+        set
+        {
+            _userName = value;
+            this.StateHasChanged();
+        }
+    }
+
+    public string Password
+    {
+        get => _password;
+        set
+        {
+            _password = value;
+            this.StateHasChanged();
+        }
+    }
+
+    private void KeyWasPressed(KeyboardEventArgs args)
+    {
+
+        if (args.Key == "Enter")
+        {
+            this.StateHasChanged();
+            Log();
+        }
+    }
+    private async Task Log()
+    {
+    }
+
+    void NavigateToSignup()
+    {
+        NavigationManager.NavigateTo("/signup");
+    }
+}
