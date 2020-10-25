@@ -1,5 +1,10 @@
 ﻿@page "/"
 
+@using SportApp.Client.Services;
+@using SportApp.Shared.Services;
+@using SportApp.Shared.ViewModel;
+
+@inject ILoginServices LocalLoginServices
 
 @inject NavigationManager NavigationManager
 @inject HttpClient http
@@ -21,6 +26,7 @@
 </p>
 @code
      {
+
     private string _statusClass;
     private string _password = "";
     private string _errorLogin;
@@ -62,5 +68,9 @@
     void NavigateToSignup()
     {
         NavigationManager.NavigateTo("/signup");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        List<UserDTO> u = await LocalLoginServices.GetUser(5);
     }
 }
