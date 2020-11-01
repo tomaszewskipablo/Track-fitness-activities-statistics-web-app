@@ -61,6 +61,13 @@ namespace SportApp.Server.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost("exist")]
+        public IActionResult PassExist([FromBody] AuthenticateRequest model)
+        {
+                return Ok(_loginServices.PassExist(model));
+        }
+
         [HttpGet("")]
         public IActionResult GetUsers(int id)
         {

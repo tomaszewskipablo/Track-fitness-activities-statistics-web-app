@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SportApp.Shared.Authenticate;
 using SportApp.Shared.Services;
 using SportApp.Shared.ViewModel;
+using SportApp.Shared.Authenticate;
 
 namespace SportApp.Client.Services
 {
@@ -25,6 +27,15 @@ namespace SportApp.Client.Services
                 return new List<UserDTO>();
             var jsonResultGetAll = await resultGetAll.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<List<UserDTO>>(jsonResultGetAll);
+        }
+
+        public async Task<bool> Exist(AuthenticateRequest authenticateRequest)
+        {
+            var response = await _http.PostAsJsonAsync<AuthenticateRequest>("/Login/exist", authenticateRequest);
+            if (!response.IsSuccessStatusCode)
+                return false;
+            var jsonResultGetAll = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<bool>(jsonResultGetAll);
         }
 
     }
