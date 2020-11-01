@@ -46,6 +46,21 @@ namespace SportApp.Server.Controllers
             }
         }
 
+        [AllowAnonymous]
+        [HttpPost("signup")]
+        public bool SignupAsync([FromBody] SignupRequest model)
+        {
+            try
+            {
+                var user = _mapper.Map<Users>(model);
+                return _loginServices.Signup(user);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         [HttpGet("")]
         public IActionResult GetUsers(int id)
         {

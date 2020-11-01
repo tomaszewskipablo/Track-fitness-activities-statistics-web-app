@@ -1,5 +1,15 @@
 ﻿@page "/signup"
 
+@using SportApp.Shared.Services;
+@using SportApp.Shared.ViewModel;
+@using SportApp.Shared.Authenticate
+@using SportApp.Client.LoginLogic
+@using Newtonsoft.Json
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject SportApp.Client.LoginLogic.LoginState LoginState
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject ILoginServices LocalLoginServices
 
 @inject NavigationManager NavigationManager
 @inject HttpClient http
@@ -21,8 +31,8 @@
             </p>
             <br /><br />
             <p>
-                <MatTextField @bind-Value="@Height" Label="Height" Outlined="true" Icon="assignment_ind"></MatTextField>
-                <MatTextField @bind-Value="@Weight" Label="Weight" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@Height" Label="Height cm" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@Weight" Label="Weight kg" Outlined="true" Icon="assignment_ind"></MatTextField>
             </p>
 
             <p>
@@ -41,7 +51,7 @@
 </div>
 <br />
 <p>
-    <MatButton Outlined="true" Icon="done_outline" @onclick="Log">Sign in</MatButton>
+    <MatButton Outlined="true" Icon="done_outline" @onclick="SignupUser">Sign in</MatButton>
 </p>
 <p>
     <div class="alert @_statusClass">@_errorLogin</div>
@@ -60,7 +70,7 @@
     private int _weight;
     private int _hrmax;
     private int _averageCalories;
-    public DateTime? DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
 
     Gender genderChoosen;
 
@@ -187,7 +197,7 @@
         if (args.Key == "Enter")
         {
             this.StateHasChanged();
-            Log();
+            SignupUser();
         }
     }
     private async Task Log()
@@ -198,4 +208,25 @@
     {
         NavigationManager.NavigateTo("/");
     }
+
+    private async Task SignupUser()
+    {
+        var log_data = new SignupRequest();
+        log_data.Username = UserName.Trim();
+        log_data.Password = PasswordEnctrypt.EncodePassword(Password, "");
+        log_data.FirstName = FirstName;
+        log_data.LastName = LastName;
+        log_data.DateOfBirth = DateOfBirth;
+        log_data.Email = Email;
+        log_data.Height = Height;
+        log_data.Weight = Weight;
+        log_data.Hrmax = Hrmax;
+        log_data.AverageCalories = AverageCalories;
+        log_data.IsMan = genderChoosen.IsMale;
+
+        var response = await http.PostAsJsonAsync<SignupRequest>("/Login/signup", log_data);
+
+        NavigationManager.NavigateTo("/");
+    }
+}
 }

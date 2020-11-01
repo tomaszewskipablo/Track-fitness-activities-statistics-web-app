@@ -23,6 +23,7 @@ namespace SportApp.Server.Services
     {
         public List<Users> GetUsers(int id);
         public AuthenticateResponse Authenticate(AuthenticateRequest model);
+        public bool Signup(Users model);
     }
 
     public class LoginServices : ILoginServices
@@ -42,6 +43,27 @@ namespace SportApp.Server.Services
 
             var token = GenerateJwtToken(user);
             return new AuthenticateResponse(user, token);
+        }
+
+        public bool Signup(Users model)
+        {
+            var authenticationUsers = _unitOfWork.UsersRepository.Get(
+                x => x.Login == model.Login && x.Password == model.Password, null).FirstOrDefault();
+            if (authenticationUsers != null)
+                return false;   // user already exist
+            else
+            {
+                try
+                {
+                    _unitOfWork.UsersRepository.Insert(model);
+                    _unitOfWork.Save();
+                }
+                catch(Exception ex)
+                {
+                    return false;
+                }
+                return true;
+            }
         }
 
         private string GenerateJwtToken(User user)
