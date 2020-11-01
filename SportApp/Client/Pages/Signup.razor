@@ -19,15 +19,15 @@
     <div class="row w-100">
         <div class="col-lg-7">
             <p>
-                <MatTextField @bind-Value="@_userName" @oninput="(x=> _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="assignment_ind"></MatTextField>
-                <MatTextField @bind-Value="@_email" @oninput="(x=> _email = (string)x.Value)" Label="Email" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@_userName" @oninput="(x => _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@_email" @oninput="(x => _email = (string)x.Value)" Label="Email" Outlined="true" Icon="assignment_ind"></MatTextField>
             </p>
             <p>
-                <MatTextField @bind-Value="@_password" @oninput="(x=> _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="how_to_reg" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
+                <MatTextField @bind-Value="@_password" @oninput="(x => _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="how_to_reg" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
             </p>
             <p>
-                <MatTextField @bind-Value="@_firstName" @oninput="(x=> _firstName = (string)x.Value)" Label="First name" Outlined="true" Icon="assignment_ind"></MatTextField>
-                <MatTextField @bind-Value="@_lastName" @oninput="(x=> _lastName = (string)x.Value)" Label="Last name" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@_firstName" @oninput="(x => _firstName = (string)x.Value)" Label="First name" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@_lastName" @oninput="(x => _lastName = (string)x.Value)" Label="Last name" Outlined="true" Icon="assignment_ind"></MatTextField>
             </p>
             <br /><br />
             <p>
@@ -36,15 +36,17 @@
             </p>
 
             <p>
+                Optional fields:
+                <br /><br />
                 <MatTextField @bind-Value="@Hrmax" Label="Heart Rate max" Outlined="true" Icon="assignment_ind"></MatTextField>
                 <MatTextField @bind-Value="@AverageCalories" Label="Average calories per day" Outlined="true" Icon="assignment_ind"></MatTextField>
             </p>
-        </div>
+        </div>        
         <div class="col-lg-5">
             <p>
                 <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
                 </MatRadioGroup>
-                <MatDatePicker @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
+                <MatDatePicker Style="margin-left: 5px;" @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
             </p>
         </div>
     </div>
@@ -200,23 +202,38 @@
             SignupUser();
         }
     }
-    private async Task Log()
-    {
-    }
 
     void NavigateToLogin()
     {
         NavigationManager.NavigateTo("/");
     }
 
+    private bool AreRequiredFieldsFilled()
+    {
+        if (UserName.Length <= 0 || Password.Length <= 0 || Email.Length <= 0 || FirstName.Length <= 0 || LastName.Length <= 0 ||
+            Height == 0 || Weight == 0)
+            return false;
+        else
+            return true;
+    }
+
     private async Task SignupUser()
     {
+        if (!AreRequiredFieldsFilled())
+        {
+            _errorLogin = "Some required fields are empty";
+            _statusClass = "alert-danger";
+            StateHasChanged();
+            return;
+        }
+
+
         var log_data = new SignupRequest();
         log_data.Username = UserName.Trim();
         log_data.Password = PasswordEnctrypt.EncodePassword(Password, "");
         log_data.FirstName = FirstName;
         log_data.LastName = LastName;
-        log_data.DateOfBirth = DateOfBirth;
+        log_data.DateOfBirth = DateOfBirth.ToLocalTime();
         log_data.Email = Email;
         log_data.Height = Height;
         log_data.Weight = Weight;
@@ -228,5 +245,4 @@
 
         NavigationManager.NavigateTo("/");
     }
-}
 }
