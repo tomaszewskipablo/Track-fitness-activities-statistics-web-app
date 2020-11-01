@@ -28,24 +28,17 @@ namespace SportApp.Server.Services
     public class LoginServices : ILoginServices
     {
         private readonly UnitOfWork _unitOfWork = new UnitOfWork();
-        private readonly AppSettings _appSettings;
-
-        public LoginServices(IOptions<AppSettings> appSettings)
-        {
-            _appSettings = appSettings.Value;
-        }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var authUser = _unitOfWork.UsersRepository.Get(
-                x => x.Login == model.Username && x.Password == model.Password,
-                null).FirstOrDefault();
-            if (authUser == null)
+            var authenticationUsers = _unitOfWork.UsersRepository.Get(
+                x => x.Login == model.Username && x.Password == model.Password,null).FirstOrDefault();
+            if (authenticationUsers == null)
                 return null;
 
             User user = new User();
-            user.Id = authUser.Id;
-            user.Username = authUser.Login;
+            user.Id = authenticationUsers.Id;
+            user.Username = authenticationUsers.Login;
 
             var token = GenerateJwtToken(user);
             return new AuthenticateResponse(user, token);
@@ -54,7 +47,7 @@ namespace SportApp.Server.Services
         private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("papaks jsjsdk sadsjasdisasa!!sasxa");
+            var key = Encoding.ASCII.GetBytes("papaks jsjsdk sadsjasdisasa!!sasxa"); // long, random string to generate
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]

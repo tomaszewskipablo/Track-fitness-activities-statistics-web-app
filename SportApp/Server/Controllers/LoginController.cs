@@ -42,7 +42,6 @@ namespace SportApp.Server.Controllers
             }
             catch (Exception ex)
             {
-                // logger can be here
                 return StatusCode(500);
             }
         }

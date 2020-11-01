@@ -5,41 +5,47 @@
 @inject HttpClient http
 
 <div class="float-right"><MatButton Outlined="true" @onclick="NavigateToLogin">Login</MatButton></div>
+<div class="container" style="margin:0px;padding: 0px;">
+    <div class="row w-100">
+        <div class="col-lg-7">
+            <p>
+                <MatTextField @bind-Value="@_userName" @oninput="(x=> _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@_email" @oninput="(x=> _email = (string)x.Value)" Label="Email" Outlined="true" Icon="assignment_ind"></MatTextField>
+            </p>
+            <p>
+                <MatTextField @bind-Value="@_password" @oninput="(x=> _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="how_to_reg" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
+            </p>
+            <p>
+                <MatTextField @bind-Value="@_firstName" @oninput="(x=> _firstName = (string)x.Value)" Label="First name" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@_lastName" @oninput="(x=> _lastName = (string)x.Value)" Label="Last name" Outlined="true" Icon="assignment_ind"></MatTextField>
+            </p>
+            <br /><br />
+            <p>
+                <MatTextField @bind-Value="@Height" Label="Height" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@Weight" Label="Weight" Outlined="true" Icon="assignment_ind"></MatTextField>
+            </p>
 
-<p>
-    <MatTextField @bind-Value="@_userName" @oninput="(x=> _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="assignment_ind"></MatTextField>
-    <MatTextField @bind-Value="@_email" @oninput="(x=> _email = (string)x.Value)" Label="Email" Outlined="true" Icon="assignment_ind"></MatTextField>
-</p>
-<p>
-    <MatTextField @bind-Value="@_password" @oninput="(x=> _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="how_to_reg" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
-</p>
-<p>
-    <MatTextField @bind-Value="@_firstName" @oninput="(x=> _firstName = (string)x.Value)" Label="First name" Outlined="true" Icon="assignment_ind"></MatTextField>
-    <MatTextField @bind-Value="@_lastName" @oninput="(x=> _lastName = (string)x.Value)" Label="Last name" Outlined="true" Icon="assignment_ind"></MatTextField>
-</p>
-<p>
-    <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
-    </MatRadioGroup>
-    <MatDatePicker @bind-Value="@DateOfBirth" Label="Date of birth"></MatDatePicker>
-
-</p>
-<p>
-    <MatTextField @bind-Value="@Height" Label="Height" Outlined="true" Icon="assignment_ind"></MatTextField>
-    <MatTextField @bind-Value="@Weight" Label="Weight" Outlined="true" Icon="assignment_ind"></MatTextField>
-</p>
-
-<p>
-    <MatTextField @bind-Value="@Hrmax" Label="Heart Rate max" Outlined="true" Icon="assignment_ind"></MatTextField>
-    <MatTextField @bind-Value="@AverageCalories" Label="Average calories per day" Outlined="true" Icon="assignment_ind"></MatTextField>
-</p>
+            <p>
+                <MatTextField @bind-Value="@Hrmax" Label="Heart Rate max" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@AverageCalories" Label="Average calories per day" Outlined="true" Icon="assignment_ind"></MatTextField>
+            </p>
+        </div>
+        <div class="col-lg-5">
+            <p>
+                <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
+                </MatRadioGroup>
+                <MatDatePicker @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
+            </p>
+        </div>
+    </div>
+</div>
+<br />
 <p>
     <MatButton Outlined="true" Icon="done_outline" @onclick="Log">Sign in</MatButton>
 </p>
-<br />
 <p>
     <div class="alert @_statusClass">@_errorLogin</div>
 </p>
-<p>@Height</p>
 
 @code
      {
