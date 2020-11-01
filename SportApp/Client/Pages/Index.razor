@@ -3,7 +3,14 @@
 @using SportApp.Client.Services;
 @using SportApp.Shared.Services;
 @using SportApp.Shared.ViewModel;
+@using SportApp.Shared.Authenticate
+@using SportApp.Client.LoginLogic
+@using Newtonsoft.Json 
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
+
+@inject SportApp.Client.LoginLogic.LoginState LoginState
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject ILoginServices LocalLoginServices
 
 @inject NavigationManager NavigationManager
@@ -62,13 +69,42 @@
         }
     }
     private async Task Log()
-    {
+    {   
+        var log_data = new AuthenticateRequest();
+        log_data.Username = UserName.Trim();
+        log_data.Password = PasswordEnctrypt.EncodePassword(Password, "");
+        HttpResponseMessage response = new HttpResponseMessage();
+        try
+        {            
+            response = await http.PostAsJsonAsync<AuthenticateRequest>("/Login/auth", log_data);
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            var jsonString = await response.Content.ReadAsStringAsync();
+            AuthenticateResponse jsonResponse = JsonConvert.DeserializeObject<AuthenticateResponse>(jsonString);
+            await localStorage.SetItemAsync("Id", jsonResponse.Id);
+            await localStorage.SetItemAsync("UserName", jsonResponse.Username);
+            await localStorage.SetItemAsync("Token", jsonResponse.Token);
+            LoginState.LoggedIn = true;
+            NavigationManager.NavigateTo("/signup");
+        }
+        else
+        {
+            _errorLogin = "Błędne dane logowania";
+            _statusClass = "alert-danger";
+            StateHasChanged();
+        }
     }
 
     void NavigateToSignup()
     {
         NavigationManager.NavigateTo("/signup");
     }
+
     protected override async Task OnInitializedAsync()
     {
         List<UserDTO> u = await LocalLoginServices.GetUser(5);

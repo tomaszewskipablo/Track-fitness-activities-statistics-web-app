@@ -11,6 +11,7 @@ namespace NCR.Server.Mapper
         {
             CreateMap<Users, UserDTO>();
             CreateMap<UserDTO, Users>();
+            CreateMap<User, Users>();
         }
     }
 }

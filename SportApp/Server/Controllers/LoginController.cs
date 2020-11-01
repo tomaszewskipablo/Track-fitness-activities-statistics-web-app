@@ -8,6 +8,9 @@ using SportApp.Shared.ViewModel;
 using SportApp.Server.Services;
 using Common.DAL.Models;
 using AutoMapper;
+using SportApp.Shared.Authenticate;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace SportApp.Server.Controllers
 {
@@ -22,6 +25,26 @@ namespace SportApp.Server.Controllers
         {
             _loginServices = loginServices;
             _mapper = mapper;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("auth")]
+        public IActionResult Authenticate([FromBody] AuthenticateRequest model)
+        {
+            try
+            {
+                var response = _loginServices.Authenticate(model);
+
+                if (response == null)
+                    return BadRequest(new { message = "Username or password is incorrect" });
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                // logger can be here
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("")]
