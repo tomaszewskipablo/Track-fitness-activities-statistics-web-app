@@ -1,0 +1,36 @@
+﻿@page "/diary"
+
+@using System.Net.Http.Headers
+
+@inject SportApp.Client.LoginLogic.LoginState LoginState
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject HttpClient http
+
+<h1>Diary</h1>
+<p>
+    sadsasa
+</p>
+@code {
+    string token;
+    int id;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        id = await localStorage.GetItemAsync<int>("Id");
+        token = await localStorage.GetItemAsync<string>("Token");
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (id == 0)
+        {
+            NavigationManager.NavigateTo("/");
+            LoginState.LoggedIn = false;
+        }
+    }
+}
+
+

@@ -17,12 +17,12 @@
 @inject HttpClient http
 
 <div class="float-right"><MatButton Outlined="true" @onclick="NavigateToSignup">Sign up</MatButton></div>
-
+<br />
 <p>
-    <MatTextField @bind-Value="@_userName" @oninput="(x=> _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="assignment_ind" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
+    <MatTextField @bind-Value="@_userName" @oninput="(x=> _userName = (string)x.Value)" Label="User name" Outlined="true" Icon="supervised_user_circle" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
 </p>
 <p>
-    <MatTextField @bind-Value="@_password" @oninput="(x=> _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="how_to_reg" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
+    <MatTextField @bind-Value="@_password" @oninput="(x=> _password = (string)x.Value)" Dense="true" Label="Password" Outlined="true" type="password" Icon="vpn_key" @onkeypress="@(e => KeyWasPressed(e))"></MatTextField>
 </p>
 <p>
     <MatButton Outlined="true" Icon="done_outline" @onclick="Log">Sign in</MatButton>
@@ -91,7 +91,7 @@
             await localStorage.SetItemAsync("UserName", jsonResponse.Username);
             await localStorage.SetItemAsync("Token", jsonResponse.Token);
             LoginState.LoggedIn = true;
-            NavigationManager.NavigateTo("/signup");
+            NavigationManager.NavigateTo("/diary");
         }
         else
         {
