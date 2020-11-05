@@ -8,6 +8,12 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using SportApp.Server.Services;
 using AutoMapper;
+using SportApp.Server.Helpers;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Logging;
+
 
 namespace SportApp.Server
 {
@@ -24,9 +30,41 @@ namespace SportApp.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "_myAllowSpecificOrigins",
+                                  builder =>
+                                  {
+                                      builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                                  });
+            });
+            services.AddControllersWithViews();
+
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+
+            var appSettings = appSettingsSection.Get<AppSettings>();
+            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
             services.AddScoped<ILoginServices, LoginServices>();
             services.AddAutoMapper(typeof(Startup));
-            services.AddControllersWithViews();
             services.AddRazorPages();
         }
 
@@ -49,9 +87,12 @@ namespace SportApp.Server
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
-
+            app.UseCors("_myAllowSpecificOrigins");
             app.UseRouting();
-
+            app.UseAuthentication();
+            
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

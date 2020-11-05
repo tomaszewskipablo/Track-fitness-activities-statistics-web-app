@@ -105,9 +105,4 @@
     {
         NavigationManager.NavigateTo("/signup");
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        List<UserDTO> u = await LocalLoginServices.GetUser(5);
-    }
 }

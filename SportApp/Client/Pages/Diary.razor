@@ -1,16 +1,24 @@
 ﻿@page "/diary"
 
 @using System.Net.Http.Headers
+@using SportApp.Shared.Services;
 
 @inject SportApp.Client.LoginLogic.LoginState LoginState
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject ILoginServices LocalLoginServices
 @inject HttpClient http
 
-<h1>Diary</h1>
-<p>
-    sadsasa
-</p>
+<InputFile OnChange="HandleFileSelected" />
+
+@if (file != null)
+{
+    <p>Number of lines read: @numLines</p>
+    <button @onclick="CountLines">Count</button>
+
+    <p> data: @data </p>
+}
+
 @code {
     string token;
     int id;
@@ -25,12 +33,39 @@
         id = await localStorage.GetItemAsync<int>("Id");
         token = await localStorage.GetItemAsync<string>("Token");
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        // needs to be automized
         if (id == 0)
         {
             NavigationManager.NavigateTo("/");
             LoginState.LoggedIn = false;
         }
+        var l = await LocalLoginServices.GetUser(2);
     }
 }
 
+@code {
+    int numLines;
+    string data;
+    string line;
+    IFileListEntry file;
 
+    void HandleFileSelected(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+
+    }
+
+    async Task CountLines()
+    {
+        numLines = 0;
+        using (var reader = new System.IO.StreamReader(file.Data))
+        {
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                data += line;
+                numLines++;
+            }
+        }
+    }
+}

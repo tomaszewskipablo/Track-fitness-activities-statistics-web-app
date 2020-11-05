@@ -42,6 +42,7 @@ client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
     .CreateClient("ServerAPI"));
 
+
             await builder.Build().RunAsync();
         }
     }

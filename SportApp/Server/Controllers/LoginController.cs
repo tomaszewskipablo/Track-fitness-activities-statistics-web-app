@@ -68,6 +68,7 @@ namespace SportApp.Server.Controllers
                 return Ok(_loginServices.PassExist(model));
         }
 
+        [Authorize]
         [HttpGet("")]
         public IActionResult GetUsers(int id)
         {

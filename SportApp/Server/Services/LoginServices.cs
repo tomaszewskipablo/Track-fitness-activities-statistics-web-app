@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using AutoMapper;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace SportApp.Server.Services
 {
@@ -99,9 +99,12 @@ namespace SportApp.Server.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        
         public List<Users> GetUsers(int id)
         {
             var table = _unitOfWork.UsersRepository.Get().Distinct().ToList();
+            
             return table;
         }
     }
