@@ -108,4 +108,4 @@ namespace SportApp.Server.Services
             return table;
         }
     }
-}
+}   
