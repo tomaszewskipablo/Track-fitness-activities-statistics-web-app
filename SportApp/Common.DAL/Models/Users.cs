@@ -19,10 +19,11 @@ namespace Common.DAL.Models
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool IsMan { get; set; }
-        public int Height { get; set; }
-        public int Weight { get; set; }
+        public int Heightcm { get; set; }
+        public int Weightkg { get; set; }
         public int? Hrmax { get; set; }
         public int? AverageCalories { get; set; }
+        public double HarrisBenedictBmr { get; set; }
 
         public virtual ICollection<Goals> Goals { get; set; }
         public virtual ICollection<TrenningSession> TrenningSession { get; set; }

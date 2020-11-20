@@ -55,7 +55,7 @@ namespace SportApp.Server.Services
             else
             {
                 try
-                {
+                {                    
                     _unitOfWork.UsersRepository.Insert(model);
                     _unitOfWork.Save();
                 }

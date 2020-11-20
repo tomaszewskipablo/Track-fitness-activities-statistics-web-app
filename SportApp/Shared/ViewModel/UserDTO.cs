@@ -12,6 +12,10 @@ namespace SportApp.Shared.ViewModel
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public bool IsMan { get; set; }
+        public int Height { get; set; }
+        public int Weight { get; set; }
         public UserDTO() { }
     }
 }

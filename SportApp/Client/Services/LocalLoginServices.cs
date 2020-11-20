@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using SportApp.Shared.Authenticate;
 using SportApp.Shared.Services;
 using SportApp.Shared.ViewModel;
-using SportApp.Shared.Authenticate;
+
 
 namespace SportApp.Client.Services
 {

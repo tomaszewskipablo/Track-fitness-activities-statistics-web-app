@@ -39,4 +39,10 @@
   </ItemGroup>
 
 
+  <ItemGroup>
+    <Folder Include="MetCalculation\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+
 </Project>

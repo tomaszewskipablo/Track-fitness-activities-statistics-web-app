@@ -12,12 +12,16 @@ namespace Common.DAL.Models
 
         public int Id { get; set; }
         public int? UserId { get; set; }
+        public int? SportId { get; set; }
         public DateTime StartingTime { get; set; }
-        public int Duration { get; set; }
-        public int? Distance { get; set; }
+        public double DurationSeconds { get; set; }
+        public double? DistanceMeters { get; set; }
+        public double? AverageVelocitykmh { get; set; }
         public int? AverageHeartRateBpm { get; set; }
-        public int Calories { get; set; }
+        public double? ElevationMeters { get; set; }
+        public double? Calories { get; set; }
 
+        public virtual Sport Sport { get; set; }
         public virtual Users User { get; set; }
         public virtual ICollection<TrenningData> TrenningData { get; set; }
     }

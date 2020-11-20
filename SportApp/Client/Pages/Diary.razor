@@ -10,17 +10,11 @@
 @inject NavigationManager NavigationManager
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject ILoginServices LocalLoginServices
+@inject IActivityServices LocalActivityServices
 @inject HttpClient http
 
 <InputFile OnChange="HandleFileSelected" />
 
-@if (file != null)
-{
-    <p>Number of lines read: @numLines</p>
-    <button @onclick="CountLines">Count</button>
-
-    <p> data: @data </p>
-}
 
 @code {
     string token;
@@ -43,7 +37,6 @@
             NavigationManager.NavigateTo("/");
             LoginState.LoggedIn = false;
         }
-        var l = await LocalLoginServices.GetUser(2);
     }
 }
 
@@ -53,14 +46,10 @@
     string line;
     IFileListEntry file;
 
-    void HandleFileSelected(IFileListEntry[] files)
+    async Task HandleFileSelected(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
 
-    }
-
-    async Task CountLines()
-    {
         Activity activity;
 
         using (var stream2 = new MemoryStream())
@@ -70,14 +59,9 @@
             var reader = new System.IO.StreamReader(stream2);
 
             activity = GarminUtils.ConvertTCS(stream2);
+
+            LocalActivityServices.ProcessActivity(activity);
+            //LocalActivityServices.PostActivity(activity);
         }
-
-
-        //while ((line = await reader.ReadLineAsync()) != null)
-        //{
-        //    data += line;
-        //    numLines++;
-        //}
-
     }
 }

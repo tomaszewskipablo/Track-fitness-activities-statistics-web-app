@@ -37,6 +37,7 @@ namespace SportApp.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<ILoginServices, LocalLoginServices>();
+            builder.Services.AddScoped<IActivityServices, LocalActivityServices>();
             builder.Services.AddHttpClient("ServerAPI",
 client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()

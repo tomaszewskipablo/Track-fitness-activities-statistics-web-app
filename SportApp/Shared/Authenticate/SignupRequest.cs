@@ -22,6 +22,7 @@ namespace SportApp.Shared.Authenticate
         public int Height { get; set; }
         [Required]
         public int Weight { get; set; }
+        public double HarrisBenedictBMR { get; set; }
         public int? Hrmax { get; set; }
         public int? AverageCalories { get; set; }
     }

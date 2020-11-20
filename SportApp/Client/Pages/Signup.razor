@@ -6,6 +6,8 @@
 @using SportApp.Client.LoginLogic
 @using Newtonsoft.Json
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using SportApp.Client.MetCalculation;
+
 
 @inject SportApp.Client.LoginLogic.LoginState LoginState
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
@@ -42,7 +44,7 @@
                 <MatTextField @bind-Value="@Hrmax" Label="Heart Rate max" Outlined="true" Icon="short_text"></MatTextField>
                 <MatTextField @bind-Value="@AverageCalories" Label="Average calories per day" Outlined="true" Icon="show_chart"></MatTextField>
             </p>
-        </div>        
+        </div>
         <div class="col-lg-5">
             <p>
                 <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
@@ -262,6 +264,9 @@
         log_data.Hrmax = Hrmax;
         log_data.AverageCalories = AverageCalories;
         log_data.IsMan = genderChoosen.IsMale;
+
+        HarrisBenedictBMR harris_BenedictRMR = new HarrisBenedictBMR(log_data.IsMan,log_data.Height, log_data.Weight,log_data.DateOfBirth);
+        log_data.HarrisBenedictBMR = harris_BenedictRMR.CalculateBMR();
 
         var response = await http.PostAsJsonAsync<SignupRequest>("/Login/signup", log_data);
 

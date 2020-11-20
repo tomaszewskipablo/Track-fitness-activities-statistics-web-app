@@ -17,6 +17,8 @@ namespace Common.DAL.Context
         }
 
         public virtual DbSet<Goals> Goals { get; set; }
+        public virtual DbSet<Met> Met { get; set; }
+        public virtual DbSet<Sport> Sport { get; set; }
         public virtual DbSet<TrenningData> TrenningData { get; set; }
         public virtual DbSet<TrenningSession> TrenningSession { get; set; }
         public virtual DbSet<Users> Users { get; set; }
@@ -41,7 +43,27 @@ namespace Common.DAL.Context
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Goals)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Goals__UserId__5629CD9C");
+                    .HasConstraintName("FK__Goals__UserId__70DDC3D8");
+            });
+
+            modelBuilder.Entity<Met>(entity =>
+            {
+                entity.Property(e => e.Description)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Sport)
+                    .WithMany(p => p.Met)
+                    .HasForeignKey(d => d.SportId)
+                    .HasConstraintName("FK__Met__SportId__6754599E");
+            });
+
+            modelBuilder.Entity<Sport>(entity =>
+            {
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<TrenningData>(entity =>
@@ -51,17 +73,22 @@ namespace Common.DAL.Context
                 entity.HasOne(d => d.TrenningSession)
                     .WithMany(p => p.TrenningData)
                     .HasForeignKey(d => d.TrenningSessionId)
-                    .HasConstraintName("FK__TrenningD__Trenn__534D60F1");
+                    .HasConstraintName("FK__TrenningD__Trenn__6E01572D");
             });
 
             modelBuilder.Entity<TrenningSession>(entity =>
             {
                 entity.Property(e => e.StartingTime).HasColumnType("datetime");
 
+                entity.HasOne(d => d.Sport)
+                    .WithMany(p => p.TrenningSession)
+                    .HasForeignKey(d => d.SportId)
+                    .HasConstraintName("FK__TrenningS__Sport__6B24EA82");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.TrenningSession)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__TrenningS__UserI__5070F446");
+                    .HasConstraintName("FK__TrenningS__UserI__6A30C649");
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -77,6 +104,8 @@ namespace Common.DAL.Context
                     .IsRequired()
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.HarrisBenedictBmr).HasColumnName("HarrisBenedictBMR");
 
                 entity.Property(e => e.LastName)
                     .IsRequired()
