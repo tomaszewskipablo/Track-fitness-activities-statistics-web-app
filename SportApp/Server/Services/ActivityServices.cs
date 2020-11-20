@@ -8,7 +8,7 @@ namespace SportApp.Server.Services
 {
     public interface IActivityServices
     {
-        public void PostActivityStats(TrenningSession trenningSession);
+        public void PostActivityStats(TrainingSession TrainingSession);
         public void ProcessActivity(Activity activity);
     }
 
@@ -16,11 +16,11 @@ namespace SportApp.Server.Services
     {
         private readonly UnitOfWork _unitOfWork = new UnitOfWork();
         
-        public void PostActivityStats(TrenningSession trenningSession)
+        public void PostActivityStats(TrainingSession TrainingSession)
         {
             try
             {
-                _unitOfWork.TrenningSessionRepository.Insert(trenningSession);
+                _unitOfWork.TrainingSessionRepository.Insert(TrainingSession);
                 _unitOfWork.Save();
             }
             catch(Exception ex)

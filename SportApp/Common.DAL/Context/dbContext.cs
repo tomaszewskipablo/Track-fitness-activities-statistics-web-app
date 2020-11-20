@@ -19,8 +19,8 @@ namespace Common.DAL.Context
         public virtual DbSet<Goals> Goals { get; set; }
         public virtual DbSet<Met> Met { get; set; }
         public virtual DbSet<Sport> Sport { get; set; }
-        public virtual DbSet<TrenningData> TrenningData { get; set; }
-        public virtual DbSet<TrenningSession> TrenningSession { get; set; }
+        public virtual DbSet<TrainingData> TrainingData { get; set; }
+        public virtual DbSet<TrainingSession> TrainingSession { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -66,29 +66,29 @@ namespace Common.DAL.Context
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<TrenningData>(entity =>
+            modelBuilder.Entity<TrainingData>(entity =>
             {
                 entity.Property(e => e.Time).HasColumnType("datetime");
 
-                entity.HasOne(d => d.TrenningSession)
-                    .WithMany(p => p.TrenningData)
-                    .HasForeignKey(d => d.TrenningSessionId)
-                    .HasConstraintName("FK__TrenningD__Trenn__6E01572D");
+                entity.HasOne(d => d.TrainingSession)
+                    .WithMany(p => p.TrainingData)
+                    .HasForeignKey(d => d.TrainingSessionId)
+                    .HasConstraintName("FK__TrainingD__Trenn__6E01572D");
             });
 
-            modelBuilder.Entity<TrenningSession>(entity =>
+            modelBuilder.Entity<TrainingSession>(entity =>
             {
                 entity.Property(e => e.StartingTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Sport)
-                    .WithMany(p => p.TrenningSession)
+                    .WithMany(p => p.TrainingSession)
                     .HasForeignKey(d => d.SportId)
-                    .HasConstraintName("FK__TrenningS__Sport__6B24EA82");
+                    .HasConstraintName("FK__TrainingS__Sport__6B24EA82");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.TrenningSession)
+                    .WithMany(p => p.TrainingSession)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__TrenningS__UserI__6A30C649");
+                    .HasConstraintName("FK__TrainingS__UserI__6A30C649");
             });
 
             modelBuilder.Entity<Users>(entity =>

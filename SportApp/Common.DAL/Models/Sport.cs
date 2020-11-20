@@ -8,7 +8,7 @@ namespace Common.DAL.Models
         public Sport()
         {
             Met = new HashSet<Met>();
-            TrenningSession = new HashSet<TrenningSession>();
+            TrainingSession = new HashSet<TrainingSession>();
         }
 
         public int Id { get; set; }
@@ -16,6 +16,6 @@ namespace Common.DAL.Models
         public bool IsVelocity { get; set; }
 
         public virtual ICollection<Met> Met { get; set; }
-        public virtual ICollection<TrenningSession> TrenningSession { get; set; }
+        public virtual ICollection<TrainingSession> TrainingSession { get; set; }
     }
 }

@@ -8,16 +8,16 @@ namespace Common.DAL
     {
         private readonly dbContext _context = new dbContext();
         private GenericRepository<Goals> _goalsRepository;
-        private GenericRepository<TrenningData> _trenningDataRepository;
-        private GenericRepository<TrenningSession> _trenningSessionRepository;
+        private GenericRepository<TrainingData> _TrainingDataRepository;
+        private GenericRepository<TrainingSession> _TrainingSessionRepository;
         private GenericRepository<Users> _usersRepository;
         private GenericRepository<Sport> _sportRepository;
         private GenericRepository<Met> _metRepository;
 
 
         public GenericRepository<Goals> GoalsRepository => _goalsRepository ?? (_goalsRepository = new GenericRepository<Goals>(_context));
-        public GenericRepository<TrenningData> TrenningDataRepository => _trenningDataRepository ?? (_trenningDataRepository = new GenericRepository<TrenningData>(_context));
-        public GenericRepository<TrenningSession> TrenningSessionRepository => _trenningSessionRepository ?? (_trenningSessionRepository = new GenericRepository<TrenningSession>(_context));
+        public GenericRepository<TrainingData> TrainingDataRepository => _TrainingDataRepository ?? (_TrainingDataRepository = new GenericRepository<TrainingData>(_context));
+        public GenericRepository<TrainingSession> TrainingSessionRepository => _TrainingSessionRepository ?? (_TrainingSessionRepository = new GenericRepository<TrainingSession>(_context));
         public GenericRepository<Users> UsersRepository => _usersRepository ?? (_usersRepository = new GenericRepository<Users>(_context));
         public GenericRepository<Sport> SportRepository => _sportRepository ?? (_sportRepository = new GenericRepository<Sport>(_context));
         public GenericRepository<Met> MetRepository => _metRepository ?? (_metRepository = new GenericRepository<Met>(_context));
