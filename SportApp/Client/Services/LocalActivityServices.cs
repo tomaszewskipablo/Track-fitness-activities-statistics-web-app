@@ -24,7 +24,7 @@ namespace SportApp.Client.Services
         {
             string json = JsonConvert.SerializeObject(activity);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            await _http.PostAsync("TrainingSession/", httpContent);
+            await _http.PostAsync("TrenningSession/", httpContent);
         }
 
         public async void ProcessActivity(Activity activity)

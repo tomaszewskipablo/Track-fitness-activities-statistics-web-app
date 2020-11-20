@@ -9,7 +9,7 @@ namespace SportApp.Shared.Services
 {
     public interface ILoginServices
     {
-        public Task<List<UserDTO>> GetUser(int id);
+        public Task<UserDTO> GetUser(int id);
         public Task<bool> Exist(AuthenticateRequest authenticateRequest);
     }
 }

@@ -19,10 +19,10 @@ namespace SportApp.Shared.Authenticate
         [Required]
         public bool IsMan { get; set; }
         [Required]
-        public int Height { get; set; }
+        public int Heightcm { get; set; }
         [Required]
-        public int Weight { get; set; }
-        public double HarrisBenedictBMR { get; set; }
+        public int Weightkg { get; set; }
+        public double HarrisBenedictBmr { get; set; }
         public int? Hrmax { get; set; }
         public int? AverageCalories { get; set; }
     }

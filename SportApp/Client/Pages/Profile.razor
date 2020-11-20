@@ -1,0 +1,199 @@
+﻿@page "/profile"
+
+@using System.Net.Http.Headers
+@using SportApp.Shared.Services;
+@using System.IO;
+@using SportApp.Shared.ViewModel;
+@using SportApp.Client.MetCalculation;
+
+@inject SportApp.Client.LoginLogic.LoginState LoginState
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject ILoginServices LocalLoginServices
+@inject IActivityServices LocalActivityServices
+@inject HttpClient http
+
+<div>
+    <MatAccordion>
+        <MatExpansionPanel>
+            <MatExpansionPanelSummary>
+                <MatExpansionPanelHeader><div style="margin:10px;"><MatIcon style="margin-right:6px">accessibility</MatIcon><span aria-hidden="true"></span>Hello @(User.FirstName + " " + User.LastName)</div></MatExpansionPanelHeader>
+                <MatExpansionPanelSubHeader>
+                </MatExpansionPanelSubHeader>
+            </MatExpansionPanelSummary>
+            <MatExpansionPanelDetails>
+                <MatTextField @bind-Value="@User.FirstName" Label="First name" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@User.LastName" Label="Last name" Outlined="true" Icon="assignment_ind"></MatTextField>
+                <MatTextField @bind-Value="@User.Email" Label="Email" Outlined="true" Icon="email"></MatTextField>
+            </MatExpansionPanelDetails>
+        </MatExpansionPanel>
+    </MatAccordion>
+</div>
+<br />
+<br />
+
+<h4><span   style="margin:10px;"><span class="badge badge-light">Your basal metabolic rate: @User.HarrisBenedictBmr</span></span></h4>
+<div class="mat-elevation-z5 mdc-theme--surface" style="padding: 15px;">
+    <span style="margin:10px;"><MatIcon style="margin-right:6px">transfer_within_a_station</MatIcon><span aria-hidden="true"></span> Biometrical data </span>
+    <br />
+    <div style="margin:10px;">
+        <p>
+            <MatTextField @bind-Value="@Height" Label="Height cm" Outlined="true" Icon="vertical_align_top"></MatTextField>
+            <MatTextField @bind-Value="@Weight" Label="Weight kg" Outlined="true" Icon="space_bar"></MatTextField>
+        </p>
+        <p>
+            <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
+            </MatRadioGroup>
+            <MatDatePicker Style="margin-left: 5px;" @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
+        </p>        
+
+    </div>
+</div>
+
+<p style="margin-top:10x">
+    <div class="alert @_statusClass">@_errorMessage</div>
+</p>
+
+<br />
+<br />
+<div class="float-right">
+    <p>
+        <MatButton Outlined="true" Icon="done_outline" @onclick="Save">Save</MatButton>
+    </p>
+</div>
+
+
+
+@code {
+    string token;
+    int id;
+    UserDTO User = new UserDTO();
+    HarrisBenedictBMR harrisBenedictBMR;
+
+    private string _statusClass;
+    private string _errorMessage;
+
+
+    public int Height
+    {
+        get => User.Heightcm;
+        set
+        {
+            if (value < 40 || value > 240)
+            {
+                _errorMessage = "Height should be between 40 cm and 240 cm";
+                _statusClass = "alert-danger";
+            }
+            else
+            {
+                User.Heightcm = value;
+                harrisBenedictBMR.Height = value;
+                _errorMessage = "";
+                _statusClass = "";
+                User.HarrisBenedictBmr = harrisBenedictBMR.CalculateBMR();
+                this.StateHasChanged();
+            }
+        }
+    }
+
+    public int Weight
+    {
+        get => User.Weightkg;
+        set
+        {
+            if (value < 30 || value > 250)
+            {
+                _errorMessage = "Weight should be between 30 kg and 250 kg";
+                _statusClass = "alert-danger";
+            }
+            else
+            {
+                User.Weightkg = value;
+                harrisBenedictBMR.Weight = value;
+                User.HarrisBenedictBmr = harrisBenedictBMR.CalculateBMR();
+                _errorMessage = "";
+                _statusClass = "";
+                this.StateHasChanged();
+            }
+        }
+    }
+
+    public DateTime DateOfBirth
+    {
+        get => User.DateOfBirth;
+        set
+        {
+            if (value < new DateTime(1910, 1, 1, 1, 1, 1, 1) || value > new DateTime(2017, 1, 1, 1, 1, 1, 1))
+            {
+                _errorMessage = "Year should be between 1910 and 2017";
+                _statusClass = "alert-danger";
+            }
+            else
+            {
+                User.DateOfBirth = value;
+                harrisBenedictBMR.CalculateAge(value);
+                User.HarrisBenedictBmr = harrisBenedictBMR.CalculateBMR();
+                _errorMessage = "";
+                _statusClass = "";
+                this.StateHasChanged();
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        id = await localStorage.GetItemAsync<int>("Id");
+        token = await localStorage.GetItemAsync<string>("Token");
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        // needs to be automized
+        if (id == 0)
+        {
+            NavigationManager.NavigateTo("/");
+            LoginState.LoggedIn = false;
+        }
+
+        User = await LocalLoginServices.GetUser(id);
+        harrisBenedictBMR = new HarrisBenedictBMR(User.IsMan, User.Heightcm, User.Weightkg, User.DateOfBirth);
+
+        genderChoosen = new Gender("Male", true);
+    }
+
+
+
+    Gender genderChoosen;
+
+    public class Gender
+    {
+        public string Name { get; set; }
+        public bool IsMale { get; set; }
+
+
+        public Gender(string name, bool isMale)
+        {
+            Name = name;
+            IsMale = isMale;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
+    Gender[] gender = new[]
+    {
+            new Gender("Male", true),
+            new Gender("Female", false),
+        };
+
+    void Save()
+    {
+
+    }
+}

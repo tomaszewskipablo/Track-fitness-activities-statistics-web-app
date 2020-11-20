@@ -20,11 +20,11 @@ namespace SportApp.Server.Controllers
         }
 
         [Authorize]
-        [HttpPost("TrainingSession")]
-        public void RetrieveTrainingSession([FromBody] Activity activity)
+        [HttpPost("TrenningSession")]
+        public void RetrieveTrenningSession([FromBody] Activity activity)
         {
-            TrainingSession TrainingSession =  new TrainingSession();
-            _activityServices.PostActivityStats(TrainingSession);
+            TrenningSession trenningSession =  new TrenningSession();
+            _activityServices.PostActivityStats(trenningSession);
             //var dto = _mapper.Map<IEnumerable<UserDTO>>(personnelTable);
             //return Ok(dto);
         }

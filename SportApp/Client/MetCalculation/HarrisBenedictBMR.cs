@@ -19,10 +19,7 @@ namespace SportApp.Client.MetCalculation
             IsMan = _isMan;
             Height = _height;
             Weight = _weight;
-            Age = DateTime.Today.Year - _dateOfBirth.Year;
-
-            // Go back to the year in which the person was born in case of a leap year
-            if (_dateOfBirth.Date > DateTime.Today.AddYears(-Age)) Age--;
+            CalculateAge(_dateOfBirth);
         }
         
         public double CalculateBMR()
@@ -37,6 +34,13 @@ namespace SportApp.Client.MetCalculation
             }
 
             return BMR;
+        }
+        public void CalculateAge(DateTime _dateOfBirth)
+        {
+            Age = DateTime.Today.Year - _dateOfBirth.Year;
+
+            // Go back to the year in which the person was born in case of a leap year
+            if (_dateOfBirth.Date > DateTime.Today.AddYears(-Age)) Age--;
         }
     }
 }

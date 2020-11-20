@@ -72,8 +72,8 @@ namespace SportApp.Server.Controllers
         [HttpGet("")]
         public IActionResult GetUsers(int id)
         {
-            var personnelTable = _loginServices.GetUsers(5);
-            var dto = _mapper.Map<IEnumerable<UserDTO>>(personnelTable);
+            var personnel = _loginServices.GetUsers(id);
+            var dto = _mapper.Map<UserDTO>(personnel);
             return Ok(dto);
         }
     }

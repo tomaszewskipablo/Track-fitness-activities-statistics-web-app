@@ -21,7 +21,7 @@ namespace SportApp.Server.Services
 {
     public interface ILoginServices
     {
-        public List<Users> GetUsers(int id);
+        public Users GetUsers(int id);
         public AuthenticateResponse Authenticate(AuthenticateRequest model);
         public bool Signup(Users model);
         public bool PassExist(AuthenticateRequest model);
@@ -55,7 +55,7 @@ namespace SportApp.Server.Services
             else
             {
                 try
-                {                    
+                {
                     _unitOfWork.UsersRepository.Insert(model);
                     _unitOfWork.Save();
                 }
@@ -69,7 +69,7 @@ namespace SportApp.Server.Services
         public bool PassExist(AuthenticateRequest model)
         {
             var LoginExist = _unitOfWork.UsersRepository.Get(
-                x => x.Login == model.Username, null).Select(x=>x.Id).FirstOrDefault();
+                x => x.Login == model.Username, null).Select(x => x.Id).FirstOrDefault();
 
             if (LoginExist > 0)
                 return true;
@@ -100,12 +100,12 @@ namespace SportApp.Server.Services
             return tokenHandler.WriteToken(token);
         }
 
-        
-        public List<Users> GetUsers(int id)
+
+        public Users GetUsers(int id)
         {
-            var table = _unitOfWork.UsersRepository.Get().Distinct().ToList();
-            
-            return table;
+            var user = _unitOfWork.UsersRepository.GetByID(id);
+
+            return user;
         }
     }
-}   
+}

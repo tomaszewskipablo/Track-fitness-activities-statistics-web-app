@@ -20,13 +20,13 @@ namespace SportApp.Client.Services
             _http = http;
         }
 
-        public async Task<List<UserDTO>> GetUser(int id)
+        public async Task<UserDTO> GetUser(int id)
         {
             var resultGetAll = await _http.GetAsync("Login?id="+id);
             if (!resultGetAll.IsSuccessStatusCode)
-                return new List<UserDTO>();
+                return new UserDTO();
             var jsonResultGetAll = await resultGetAll.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<UserDTO>>(jsonResultGetAll);
+            return JsonConvert.DeserializeObject<UserDTO>(jsonResultGetAll);
         }
 
         public async Task<bool> Exist(AuthenticateRequest authenticateRequest)

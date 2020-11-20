@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Common.DAL.Models
 {
-    public partial class TrainingSession
+    public partial class TrenningSession
     {
-        public TrainingSession()
+        public TrenningSession()
         {
-            TrainingData = new HashSet<TrainingData>();
+            TrenningData = new HashSet<TrainingData>();
         }
 
         public int Id { get; set; }
@@ -23,6 +23,6 @@ namespace Common.DAL.Models
 
         public virtual Sport Sport { get; set; }
         public virtual Users User { get; set; }
-        public virtual ICollection<TrainingData> TrainingData { get; set; }
+        public virtual ICollection<TrainingData> TrenningData { get; set; }
     }
 }

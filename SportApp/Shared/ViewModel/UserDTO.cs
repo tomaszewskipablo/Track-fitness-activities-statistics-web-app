@@ -14,8 +14,9 @@ namespace SportApp.Shared.ViewModel
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool IsMan { get; set; }
-        public int Height { get; set; }
-        public int Weight { get; set; }
+        public int Heightcm { get; set; }
+        public int Weightkg { get; set; }
+        public double HarrisBenedictBmr { get; set; }
         public UserDTO() { }
     }
 }

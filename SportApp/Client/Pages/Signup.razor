@@ -259,14 +259,14 @@
         log_data.LastName = LastName;
         log_data.DateOfBirth = DateOfBirth.ToLocalTime();
         log_data.Email = Email;
-        log_data.Height = Height;
-        log_data.Weight = Weight;
+        log_data.Heightcm = Height;
+        log_data.Weightkg = Weight;
         log_data.Hrmax = Hrmax;
         log_data.AverageCalories = AverageCalories;
         log_data.IsMan = genderChoosen.IsMale;
 
-        HarrisBenedictBMR harris_BenedictRMR = new HarrisBenedictBMR(log_data.IsMan,log_data.Height, log_data.Weight,log_data.DateOfBirth);
-        log_data.HarrisBenedictBMR = harris_BenedictRMR.CalculateBMR();
+        HarrisBenedictBMR harris_BenedictRMR = new HarrisBenedictBMR(log_data.IsMan,log_data.Heightcm, log_data.Weightkg, log_data.DateOfBirth);
+        log_data.HarrisBenedictBmr = harris_BenedictRMR.CalculateBMR();
 
         var response = await http.PostAsJsonAsync<SignupRequest>("/Login/signup", log_data);
 
