@@ -32,7 +32,7 @@
 <br />
 <br />
 
-<h4><span   style="margin:10px;"><span class="badge badge-light">Your basal metabolic rate: @User.HarrisBenedictBmr</span></span></h4>
+<h4><span style="margin:10px;"><span class="badge badge-light">Your basal metabolic rate: @User.HarrisBenedictBmr</span></span></h4>
 <div class="mat-elevation-z5 mdc-theme--surface" style="padding: 15px;">
     <span style="margin:10px;"><MatIcon style="margin-right:6px">transfer_within_a_station</MatIcon><span aria-hidden="true"></span> Biometrical data </span>
     <br />
@@ -194,6 +194,6 @@
 
     void Save()
     {
-
+        http.PostAsJsonAsync<UserDTO>("/Login/update", User);
     }
 }

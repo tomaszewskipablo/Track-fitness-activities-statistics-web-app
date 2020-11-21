@@ -25,6 +25,7 @@ namespace SportApp.Server.Services
         public AuthenticateResponse Authenticate(AuthenticateRequest model);
         public bool Signup(Users model);
         public bool PassExist(AuthenticateRequest model);
+        public void Put(UserDTO model);
     }
 
     public class LoginServices : ILoginServices
@@ -100,12 +101,24 @@ namespace SportApp.Server.Services
             return tokenHandler.WriteToken(token);
         }
 
-
         public Users GetUsers(int id)
         {
             var user = _unitOfWork.UsersRepository.GetByID(id);
 
             return user;
+        }
+
+        public void Put(UserDTO model)
+        {
+            var user = _unitOfWork.UsersRepository.GetByID(model.Id);
+            user.Heightcm = model.Heightcm;
+            user.Weightkg = model.Weightkg;
+            user.DateOfBirth = model.DateOfBirth;
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            _unitOfWork.UsersRepository.Update(user);
+            _unitOfWork.Save();
         }
     }
 }

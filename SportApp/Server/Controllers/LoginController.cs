@@ -76,5 +76,21 @@ namespace SportApp.Server.Controllers
             var dto = _mapper.Map<UserDTO>(personnel);
             return Ok(dto);
         }
+
+        [Authorize]
+        [HttpPost("update")]
+        public void PutUser([FromBody] UserDTO model)
+        {
+            try
+            {
+                _loginServices.Put(model);
+            }
+            catch (Exception ex)
+            {
+                int s = 2;
+                // logger
+            }
+        }
+
     }
 }
