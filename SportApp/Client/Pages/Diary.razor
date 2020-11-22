@@ -29,8 +29,8 @@
 
     Choose sport, less popular sports can be found in combobox:
     <br />
-    <MatIconButton Icon="directions_run" @onclick="s"></MatIconButton>
-    <MatIconButton Icon="directions_bike" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="directions_run" @onclick="RunningCliked"></MatIconButton>
+    <MatIconButton Icon="directions_bike" @onclick="BikingCliked"></MatIconButton>
     <MatIconButton Icon="pool" @onclick="s"></MatIconButton>
     <MatIconButton Icon="directions_walk" @onclick="s"></MatIconButton>
     <MatIconButton Icon="fitness_center" @onclick="s"></MatIconButton>
@@ -103,6 +103,17 @@
 
         _errorMessage = "";
         _statusClass = "";
+    }
+
+    void RunningCliked()
+    {
+        SportId = 2;
+        StateHasChanged();
+    }
+
+    void BikingCliked()
+    {
+        SportId = 1;
     }
 
     void s() { }
