@@ -42,10 +42,13 @@
             <MatTextField @bind-Value="@Weight" Label="Weight kg" Outlined="true" Icon="space_bar"></MatTextField>
         </p>
         <p>
-            <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
-            </MatRadioGroup>
-            <MatDatePicker Style="margin-left: 5px;" @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
-        </p>        
+            <MatChipSet @onclick="GenderChanged" Choice="true" @bind-SelectedChip="selectedGender">
+                <MatChip Label="Male"></MatChip>
+                <MatChip Label="Female"></MatChip>
+        <p class="mt-2">Your choice: @selectedGender?.Label</p>
+        </MatChipSet>
+        <MatDatePicker Style="margin-left: 5px;" @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
+        </p>
 
     </div>
 </div>
@@ -69,6 +72,7 @@
     int id;
     UserDTO User = new UserDTO();
     HarrisBenedictBMR harrisBenedictBMR;
+    MatChip selectedGender = new MatChip();
 
     private string _statusClass;
     private string _errorMessage;
@@ -161,36 +165,23 @@
         User = await LocalLoginServices.GetUser(id);
         harrisBenedictBMR = new HarrisBenedictBMR(User.IsMan, User.Heightcm, User.Weightkg, User.DateOfBirth);
 
-        genderChoosen = new Gender("Male", true);
+        if (User.IsMan)
+            selectedGender.Label = "Male";
+        else
+            selectedGender.Label = "Female";
     }
 
-
-
-    Gender genderChoosen;
-
-    public class Gender
+    void GenderChanged()
     {
-        public string Name { get; set; }
-        public bool IsMale { get; set; }
+        if (selectedGender?.Label == "Male")
+            User.IsMan = true;
+        else
+            User.IsMan = false;
 
-
-        public Gender(string name, bool isMale)
-        {
-            Name = name;
-            IsMale = isMale;
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
+        harrisBenedictBMR.IsMan = User.IsMan;
+        User.HarrisBenedictBmr = harrisBenedictBMR.CalculateBMR();
+        this.StateHasChanged();
     }
-
-    Gender[] gender = new[]
-    {
-            new Gender("Male", true),
-            new Gender("Female", false),
-        };
 
     void Save()
     {

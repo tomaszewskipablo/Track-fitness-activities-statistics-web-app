@@ -47,9 +47,14 @@
         </div>
         <div class="col-lg-5">
             <p>
-                <MatRadioGroup @bind-Value="@genderChoosen" Items="@gender">
-                </MatRadioGroup>
-                <MatDatePicker Style="margin-left: 5px;" @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
+                <MatChipSet Choice="true" @bind-SelectedChip="selectedGender">
+                    <MatChip Label="Male"></MatChip>
+                    <MatChip Label="Female"></MatChip>
+            <p class="mt-2">Your choice: @selectedGender?.Label</p>
+            </MatChipSet>
+
+
+            <MatDatePicker Style="margin-left: 5px;" @bind-Value="@DateOfBirth" Label="Date of birth" Outlined="true"></MatDatePicker>
             </p>
         </div>
     </div>
@@ -64,6 +69,7 @@
 
 @code
      {
+    MatChip selectedGender = null;
     private string _statusClass;
     private string _password = "";
     private string _errorLogin;
@@ -76,32 +82,6 @@
     private int _hrmax;
     private int _averageCalories;
     public DateTime DateOfBirth { get; set; }
-
-    Gender genderChoosen;
-
-    public class Gender
-    {
-        public string Name { get; set; }
-        public bool IsMale { get; set; }
-
-
-        public Gender(string name, bool isMale)
-        {
-            Name = name;
-            IsMale = isMale;
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
-
-    Gender[] gender = new[]
-    {
-            new Gender("Male", true),
-            new Gender("Female", false),
-        };
 
     public string UserName
     {
@@ -214,7 +194,7 @@
     private bool AreRequiredFieldsFilled()
     {
         if (UserName.Length <= 0 || Password.Length <= 0 || Email.Length <= 0 || FirstName.Length <= 0 || LastName.Length <= 0 ||
-            Height == 0 || Weight == 0 || genderChoosen == null || DateOfBirth < new DateTime(1930, 1, 1, 1, 1, 1, 1))
+            Height == 0 || Weight == 0 || DateOfBirth < new DateTime(1930, 1, 1, 1, 1, 1, 1))
             return false;
         else
             return true;
@@ -263,9 +243,12 @@
         log_data.Weightkg = Weight;
         log_data.Hrmax = Hrmax;
         log_data.AverageCalories = AverageCalories;
-        log_data.IsMan = genderChoosen.IsMale;
+        if (selectedGender?.Label == "Male")
+            log_data.IsMan = true;
+        else
+            log_data.IsMan = false;
 
-        HarrisBenedictBMR harris_BenedictRMR = new HarrisBenedictBMR(log_data.IsMan,log_data.Heightcm, log_data.Weightkg, log_data.DateOfBirth);
+        HarrisBenedictBMR harris_BenedictRMR = new HarrisBenedictBMR(log_data.IsMan, log_data.Heightcm, log_data.Weightkg, log_data.DateOfBirth);
         log_data.HarrisBenedictBmr = harris_BenedictRMR.CalculateBMR();
 
         var response = await http.PostAsJsonAsync<SignupRequest>("/Login/signup", log_data);
