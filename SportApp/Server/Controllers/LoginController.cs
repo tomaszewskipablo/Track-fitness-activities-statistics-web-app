@@ -87,7 +87,6 @@ namespace SportApp.Server.Controllers
             }
             catch (Exception ex)
             {
-                int s = 2;
                 // logger
             }
         }

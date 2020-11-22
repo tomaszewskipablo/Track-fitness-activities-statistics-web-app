@@ -69,6 +69,8 @@ namespace SportApp.Server
 
             services.AddScoped<ILoginServices, LoginServices>();
             services.AddScoped<IActivityServices, ActivityServices>();
+            services.AddScoped<ISportServices, SportServices>();
+            
             services.AddAutoMapper(typeof(Startup));
             services.AddRazorPages();
         }

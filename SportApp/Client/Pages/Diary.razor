@@ -3,6 +3,7 @@
 @using System.Net.Http.Headers
 @using SportApp.Shared.Services;
 @using System.IO;
+@using SportApp.Shared.ViewModel;
 @using System.Xml.Serialization;
 @using SportApp.Shared;
 
@@ -11,15 +12,53 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject ILoginServices LocalLoginServices
 @inject IActivityServices LocalActivityServices
+@inject ISportServices LocalSportServices
 @inject HttpClient http
 
 
-<InputFile OnChange="HandleFileSelected" />
+<div class="mat-elevation-z1" style="padding: 20px">
 
+    <div style="color:white">
+        <InputFile OnChange="HandleFileSelected" /><br />
+    </div>
+
+    <div style="font-size:12px">tcx files supported</div>
+    <div style="font-size:12px">@file?.Name</div>
+    <br />
+    <br />
+
+    Choose sport, less popular sports can be found in combobox:
+    <br />
+    <MatIconButton Icon="directions_run" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="directions_bike" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="pool" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="directions_walk" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="fitness_center" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="rowing" @onclick="s"></MatIconButton>
+    @if (Sports != null)
+    {
+        <MatSelectValue @bind-Value="SportId" Items="@Sports" ValueSelector="@(i=>i.Id)">
+            <ItemTemplate>
+                <span>@context?.Name</span>
+            </ItemTemplate>
+        </MatSelectValue>
+    }
+    <p>
+        <MatButton Outlined="true" @onclick="Upload">Upload</MatButton>
+    </p>            
+</div>
+
+<p style="margin-top:10x">
+    <div class="alert @_statusClass">@_errorMessage</div>
+</p>
 
 @code {
     string token;
     int id;
+    int SportId = -1;
+    SportDTOCombobox[] Sports;
+    private string _statusClass;
+    private string _errorMessage;
 
     protected override void OnInitialized()
     {
@@ -38,20 +77,20 @@
             NavigationManager.NavigateTo("/");
             LoginState.LoggedIn = false;
         }
-    }
-}
 
-@code {
-    int numLines;
-    string data;
-    string line;
+        Sports = await LocalSportServices.GetSports();
+
+        StateHasChanged();
+    }
+
     IFileListEntry file;
+    Activity activity;
 
     async Task HandleFileSelected(IFileListEntry[] files)
     {
         file = files.FirstOrDefault();
 
-        Activity activity;
+
 
         using (var stream2 = new MemoryStream())
         {
@@ -60,11 +99,33 @@
             var reader = new System.IO.StreamReader(stream2);
 
             activity = GarminUtils.ConvertTCS(stream2);
-
-            LocalActivityServices.ProcessActivity(activity);
-            //LocalActivityServices.PostActivity(activity);
         }
+
+        _errorMessage = "";
+        _statusClass = "";
     }
 
+    void s() { }
+    void Upload()
+    {
+        if (activity != null)
+        {
+            if (SportId > 0)
+            {
+                activity.Id = SportId;
+                LocalActivityServices.ProcessActivity(activity);
+            }
+            else
+            {
+                _errorMessage = "Choose sport type";
+                _statusClass = "alert-danger";
+            }
+        }
+        else
+        {
+            _errorMessage = "Upload training file";
+            _statusClass = "alert-danger";
+        }
 
+    }
 }
