@@ -32,8 +32,9 @@
 <br />
 <br />
 
-<h4><span style="margin:10px;"><span class="badge badge-light">Your basal metabolic rate: @User.HarrisBenedictBmr</span></span></h4>
-<div class="mat-elevation-z5 mdc-theme--surface" style="padding: 15px;">
+
+@*<div style="margin-left:20px; margin-bottom:10px"><MatIcon style="margin-right:6px">whatshot</MatIcon><span aria-hidden="true"></span><span style="padding-bottom:5px;"> <span class="badge badge-info">Your besal metabolic rate: @User.HarrisBenedictBmr kcal  </span></span></div>*@
+<div class="mat-elevation-z5 mdc-theme--surface" style="padding: 15px;; margin-bottom: 10px">
     <span style="margin:10px;"><MatIcon style="margin-right:6px">transfer_within_a_station</MatIcon><span aria-hidden="true"></span> Biometrical data </span>
     <br />
     <div style="margin:10px;">
@@ -52,18 +53,19 @@
 
     </div>
 </div>
+<span style="padding-top:10px; font-size: 23px"> <span class="badge badge-info">Your besal metabolic rate: @User.HarrisBenedictBmr kcal  </span></span>
 
 <p style="margin-top:10x">
     <div class="alert @_statusClass">@_errorMessage</div>
 </p>
 
-<br />
-<br />
 <div class="float-right">
     <p>
         <MatButton Outlined="true" Icon="done_outline" @onclick="Save">Save</MatButton>
     </p>
 </div>
+
+
 
 
 
