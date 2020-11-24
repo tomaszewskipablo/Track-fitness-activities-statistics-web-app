@@ -54,7 +54,7 @@
 
 @code {
     string token;
-    int id;
+    int UserId;
     int SportId = -1;
     SportDTOCombobox[] Sports;
     private string _statusClass;
@@ -67,12 +67,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        id = await localStorage.GetItemAsync<int>("Id");
+        UserId = await localStorage.GetItemAsync<int>("Id");
         token = await localStorage.GetItemAsync<string>("Token");
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         // needs to be automized
-        if (id == 0)
+        if (UserId == 0)
         {
             NavigationManager.NavigateTo("/");
             LoginState.LoggedIn = false;
@@ -124,6 +124,7 @@
             if (SportId > 0)
             {
                 activity.Id = SportId;
+                activity.UserId = UserId;
                 LocalActivityServices.ProcessActivity(activity);
             }
             else

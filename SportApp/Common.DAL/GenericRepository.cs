@@ -50,7 +50,7 @@ namespace Common.DAL
 
         public virtual void Insert(TEntity entity)
         {
-            DbSet.Add(entity);
+                DbSet.Add(entity);
         }
 
         public virtual void Delete(object id)
