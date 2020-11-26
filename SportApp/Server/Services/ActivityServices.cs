@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SportApp.Server.MetCalculation;
 
 
 namespace SportApp.Server.Services
@@ -57,20 +58,21 @@ namespace SportApp.Server.Services
 
             TrainingSession.AverageVelocitykmh = (double)(TrainingSession.DistanceMeters / TrainingSession.DurationSeconds * 3.6);
 
-            double Met = _unitOfWork.MetRepository.Get(x => x.SportId == activity.Id
-            && x.MinSpeedkmh < TrainingSession.AverageVelocitykmh && x.MaxSpeedkmh > TrainingSession.AverageVelocitykmh)
-            .Select(x => x.Value).FirstOrDefault();
+            //double Met = _unitOfWork.MetRepository.Get(x => x.SportId == activity.Id
+            //&& x.MinSpeedkmh < TrainingSession.AverageVelocitykmh && x.MaxSpeedkmh > TrainingSession.AverageVelocitykmh)
+            //.Select(x => x.Value).FirstOrDefault();
 
             TrainingSession.SportId = activity.Id;
             TrainingSession.UserId = activity.UserId;
             TrainingSession.StartingTime = DateTime.Parse(activity.Laps[0].Tracks[0].TrackPoints[0].Timex);
+            TrainingSession.Calories = 0;
+            //CorrectedMet = Met * 3.5 / CorrectedMetcoefficent;
 
-            CorrectedMet = Met * 3.5 / CorrectedMetcoefficent;
-
-            TrainingSession.Calories = CorrectedMet * Weight * TrainingSession.DurationSeconds / 3600; // kcal = CorectedMET * kg * h
+            //TrainingSession.Calories = CorrectedMet * Weight * TrainingSession.DurationSeconds / 3600; // kcal = CorectedMET * kg * h
 
             _unitOfWork.TrainingSessionRepository.Insert(TrainingSession);
             _unitOfWork.Save();
+
 
             List<TrackPoint> Training = new List<TrackPoint>();
 
@@ -102,8 +104,11 @@ namespace SportApp.Server.Services
                 point.Velocitykmh = (Training[i*10].DistanceMeters - PreviousDistance) / 10 * 3.6;
                 PreviousDistance = Training[i * 10].DistanceMeters;
 
-                Met = MetTable.Where(x => x.MinSpeedkmh < point.Velocitykmh && x.MaxSpeedkmh > point.Velocitykmh)
-                    .Select(x=>x.Value).FirstOrDefault();
+
+                MetVelocity metVelocity = new MetVelocity();
+                double Met = metVelocity.MetBasedOnVelocity(MetTable, (double)point.Velocitykmh);
+
+
                 CorrectedMet = Met * 3.5 / CorrectedMetcoefficent;
                 point.Calories = CorrectedMet * Weight * 10 / 3600; // kcal = CorectedMET * kg * h
                 point.AltitudeMeters = Training[i * 10].AltitudeMeters;
@@ -118,8 +123,8 @@ namespace SportApp.Server.Services
                 CaloriesALL += (double)point.Calories;
             }
 
+            // update calories for TrainingSession
             _unitOfWork.Save();
-            double a = CaloriesALL;
         }
 
         public List<double> GetCalories(int trainingSessionId)
