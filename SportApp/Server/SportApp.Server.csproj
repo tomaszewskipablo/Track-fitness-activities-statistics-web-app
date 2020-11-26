@@ -8,6 +8,7 @@
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
+    <PackageReference Include="ChartJs.Blazor.Fork" Version="2.0.0" />
     <PackageReference Include="MatBlazor" Version="2.7.0" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
