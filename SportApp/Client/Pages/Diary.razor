@@ -34,7 +34,7 @@
     <MatIconButton Icon="pool" @onclick="s"></MatIconButton>
     <MatIconButton Icon="directions_walk" @onclick="s"></MatIconButton>
     <MatIconButton Icon="fitness_center" @onclick="s"></MatIconButton>
-    <MatIconButton Icon="rowing" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="rowing" @onclick="RowingCliked"></MatIconButton>
     @if (Sports != null)
     {
         <MatSelectValue @bind-Value="SportId" Items="@Sports" ValueSelector="@(i=>i.Id)">
@@ -109,12 +109,17 @@
     {
         SportId = 2;
         StateHasChanged();
-        NavigationManager.NavigateTo("/basic");
     }
 
     void BikingCliked()
     {
         SportId = 1;
+    }
+
+    void RowingCliked()
+    {
+        SportId = 1;
+        NavigationManager.NavigateTo("/basic");
     }
 
     void s() { }

@@ -13,6 +13,7 @@ namespace SportApp.Server.Services
     {
         public void PostActivityStats(TrainingSession TrainingSession);
         public void ProcessActivity(Activity activity);
+        public List<double> GetCalories(int trainingSessionId);
     }
 
     public class ActivityServices : IActivityServices
@@ -119,6 +120,13 @@ namespace SportApp.Server.Services
 
             _unitOfWork.Save();
             double a = CaloriesALL;
+        }
+
+        public List<double> GetCalories(int trainingSessionId)
+        {
+            List<double> calories = _unitOfWork.TrainingDataRepository.Get(x=>x.TrainingSessionId == trainingSessionId).Select(x=>x.Calories).ToList();
+             
+            return calories;
         }
     }
 }

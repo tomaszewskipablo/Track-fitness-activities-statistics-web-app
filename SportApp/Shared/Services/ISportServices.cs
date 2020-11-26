@@ -12,4 +12,3 @@ namespace SportApp.Shared.Services
         public Task<SportDTOCombobox[]> GetSports();
     }
 }
-

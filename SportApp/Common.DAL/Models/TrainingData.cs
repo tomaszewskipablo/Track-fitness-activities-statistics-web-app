@@ -15,7 +15,7 @@ namespace Common.DAL.Models
         public double? Velocitykmh { get; set; }
         public double? ElevationMeters { get; set; }
         public int? HeartRateBpm { get; set; }
-        public double? Calories { get; set; }
+        public double Calories { get; set; }
 
         public virtual TrainingSession TrainingSession { get; set; }
 

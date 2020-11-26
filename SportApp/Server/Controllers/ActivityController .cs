@@ -35,5 +35,15 @@ namespace SportApp.Server.Controllers
         {
             _activityServices.ProcessActivity(activity);
         }
+
+        [Authorize]
+        [HttpGet("Calories")]
+        public IActionResult GetCalories(int trainingSessionId)
+        {
+            trainingSessionId = 2;
+            var sports = _activityServices.GetCalories(trainingSessionId);
+            //var dto = _mapper.Map<IEnumerable<SportDTOCombobox>>(sports);
+            return Ok(sports);
+        }
     }
 }

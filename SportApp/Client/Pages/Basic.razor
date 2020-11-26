@@ -12,40 +12,47 @@
 @using ChartJs.Blazor.Interop
 
 @using ChartJs.Blazor.LineChart
+@using System.Net.Http.Headers
+@using SportApp.Shared.Services;
+@using System.IO;
+@using SportApp.Shared.ViewModel;
+
+@inject IActivityServices LocalActivityServices
 
 <Chart Config="_config" @ref="_chart"></Chart>
 
+<button @onclick="Update"></button>
 
 @code {
-    private LineConfig _config;
-    private Chart _chart;
+        private LineConfig _config;
+        private Chart _chart;
 
-    protected override void OnInitialized()
-    {
-        _config = new LineConfig
+        protected override void OnInitialized()
         {
-            Options = new LineOptions
+            _config = new LineConfig
             {
-                Responsive = true,
-                Title = new OptionsTitle
+                Options = new LineOptions
                 {
-                    Display = true,
-                    Text = "ChartJs.Blazor Line Chart"
-                },
-                Tooltips = new Tooltips
-                {
-                    Mode = InteractionMode.Nearest,
-                    Intersect = true
-                },
-                Hover = new Hover
-                {
-                    Mode = InteractionMode.Nearest,
-                    Intersect = true
-                },
-                Scales = new Scales
-                {
-                    XAxes = new List<CartesianAxis>
-                {
+                    Responsive = true,
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = "Calories"
+                    },
+                    Tooltips = new Tooltips
+                    {
+                        Mode = InteractionMode.Nearest,
+                        Intersect = true
+                    },
+                    Hover = new Hover
+                    {
+                        Mode = InteractionMode.Nearest,
+                        Intersect = true
+                    },
+                    Scales = new Scales
+                    {
+                        XAxes = new List<CartesianAxis>
+{
                         new LinearCartesianAxis
                         {
                             ScaleLabel = new ScaleLabel
@@ -54,8 +61,8 @@
                             }
                         }
                     },
-                    YAxes = new List<CartesianAxis>
-                {
+                        YAxes = new List<CartesianAxis>
+{
                         new LinearCartesianAxis
                         {
                             ScaleLabel = new ScaleLabel
@@ -64,31 +71,55 @@
                             }
                         }
                     }
+                    }
                 }
-            }
-        };
+            };
+            List<Point> s = new List<Point>();
 
-        List<Point> s = new List<Point>();
-
-        s.AddRange(Enumerable.Range(1, 100).Select(i => new Point(i, i + 10)));
-        s.Add(new Point(101, 11));
-        s.Add(new Point(102, 3));
-        s.AddRange(Enumerable.Range(1, 100).Select(i => new Point(i + 102, i + 10)));
-
-        // lineConfig.Data.Datasets.Add(s);
-
-        IDataset<Point> dataset1 = new LineDataset<Point>(s)
-        {
-            Label = "My first dataset",
-            //BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
-            BorderColor = ColorUtil.ColorHexString(252, 186, 3),
-            Fill = FillingMode.Disabled,
-            PointBorderWidth = 0,
-            SteppedLine = SteppedLine.False,
-
+            IDataset<Point> dataset1 = new LineDataset<Point>(s)
+            {
+                Label = "My first dataset",
+                BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
+                BorderColor = ColorUtil.ColorHexString(252, 3, 3),
+                Fill = FillingMode.Disabled,
+                PointBorderWidth = 0,
+                SteppedLine = SteppedLine.False,
+                LineTension = -5,
         };
 
         _config.Data.Datasets.Add(dataset1);
+    }
+
+
+    IDataset<Point> dataset1;
+
+    async void Update()
+    {
+        Point a = new Point(1, 2);
+        Point b = new Point(2, 3);
+        dataset1 = (IDataset<Point>)_config.Data.Datasets[0];
+        dataset1.Clear();
+
+        List<double> calories = await LocalActivityServices.GetCalories(1);
+
+        int i = 0;
+        foreach (var y in calories)
+        {
+            if (y != 0)
+            {
+                dataset1.Add((new Point(i, y)));
+                i++;
+            }
+        }
+
+        _config.Data.Datasets[0] = dataset1;
+
+
+        //dataset1.Clear();
+        //dataset1.Add(a);
+        //dataset1.Add(b);
+
+        _chart.Update();
     }
 
 }

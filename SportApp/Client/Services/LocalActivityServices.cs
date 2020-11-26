@@ -33,6 +33,14 @@ namespace SportApp.Client.Services
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             await _http.PostAsync("Activity/Process", httpContent);
         }
+        public async Task<List<double>> GetCalories(int trainingSession)
+        {
+            var resultGetAll = await _http.GetAsync("Activity/Calories?trainingSession=" + trainingSession);
+            if (!resultGetAll.IsSuccessStatusCode)
+                return new List<double>();
+            var jsonResultGetAll = await resultGetAll.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<double>>(jsonResultGetAll);
+        }
     }
 }
 
