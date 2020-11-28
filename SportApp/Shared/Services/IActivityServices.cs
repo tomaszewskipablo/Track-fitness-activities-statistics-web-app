@@ -10,8 +10,8 @@ namespace SportApp.Shared.Services
     public interface IActivityServices
     {
         public void PostActivity(Activity activity);
-        public void ProcessActivity(Activity activity);
-        public Task<List<double>> GetCalories(int trainingSession);
+        public Task<int> ProcessActivity(Activity activity);
+        public Task<List<CaloriesGraph>> GetCalories(int trainingSession);
     }
 }
 

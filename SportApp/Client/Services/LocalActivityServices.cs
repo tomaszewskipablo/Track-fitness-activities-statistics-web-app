@@ -27,28 +27,32 @@ namespace SportApp.Client.Services
             await _http.PostAsync("TrenningSession/", httpContent);
         }
 
-        public async void ProcessActivity(Activity activity)
+        public async Task<int> ProcessActivity(Activity activity)
         {
             string json = JsonConvert.SerializeObject(activity);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-            await _http.PostAsync("Activity/Process", httpContent);
-        }
-        public async Task<List<double>> GetCalories(int trainingSession)
-        {
-            var resultGetAll = await _http.GetAsync("Activity/Calories?trainingSession=" + trainingSession);
+           var resultGetAll = await _http.PostAsync("Activity/Process", httpContent);
             if (!resultGetAll.IsSuccessStatusCode)
-                return new List<double>();
+                return 0;
             var jsonResultGetAll = await resultGetAll.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<double>>(jsonResultGetAll);
+            return JsonConvert.DeserializeObject<int>(jsonResultGetAll);
+        }
+        public async Task<List<CaloriesGraph>> GetCalories(int trainingSession)
+        {
+            var resultGetAll = await _http.GetAsync("Activity/Calories?trainingSessionId=" + trainingSession);
+            if (!resultGetAll.IsSuccessStatusCode)
+                return new List<CaloriesGraph>();
+            var jsonResultGetAll = await resultGetAll.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<CaloriesGraph>>(jsonResultGetAll);
         }
 
-        public async Task<List<double>> GetVelocity(int trainingSession)
+        public async Task<List<CaloriesGraph>> GetVelocity(int trainingSession)
         {
-            var resultGetAll = await _http.GetAsync("Activity/Calories?trainingSession=" + trainingSession);
+            var resultGetAll = await _http.GetAsync("Activity/Velocity?trainingSession=" + trainingSession);
             if (!resultGetAll.IsSuccessStatusCode)
-                return new List<double>();
+                return new List<CaloriesGraph>();
             var jsonResultGetAll = await resultGetAll.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<double>>(jsonResultGetAll);
+            return JsonConvert.DeserializeObject<List<CaloriesGraph>>(jsonResultGetAll);
         }
     }
 }

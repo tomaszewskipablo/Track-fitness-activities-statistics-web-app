@@ -1,5 +1,4 @@
-﻿@page "/basic"
-@using ChartJs.Blazor;
+﻿@using ChartJs.Blazor;
 
 
 @using ChartJs.Blazor.Common
@@ -23,35 +22,43 @@
 
 <button @onclick="Update"></button>
 
-@code {
-        private LineConfig _config;
-        private Chart _chart;
 
-        protected override void OnInitialized()
+@code {
+
+    [Parameter]
+    public int trainingId { get; set; }
+    [Parameter]
+    public EventCallback<int> trainingIdChanged { get; set; }
+
+
+    private LineConfig _config;
+    private Chart _chart;
+
+    protected override void OnInitialized()
+    {
+        _config = new LineConfig
         {
-            _config = new LineConfig
+            Options = new LineOptions
             {
-                Options = new LineOptions
+                Responsive = true,
+                Title = new OptionsTitle
                 {
-                    Responsive = true,
-                    Title = new OptionsTitle
-                    {
-                        Display = true,
-                        Text = "Calories"
-                    },
-                    Tooltips = new Tooltips
-                    {
-                        Mode = InteractionMode.Nearest,
-                        Intersect = true
-                    },
-                    Hover = new Hover
-                    {
-                        Mode = InteractionMode.Nearest,
-                        Intersect = true
-                    },
-                    Scales = new Scales
-                    {
-                        XAxes = new List<CartesianAxis>
+                    Display = true,
+                    Text = "Calories"
+                },
+                Tooltips = new Tooltips
+                {
+                    Mode = InteractionMode.Nearest,
+                    Intersect = true
+                },
+                Hover = new Hover
+                {
+                    Mode = InteractionMode.Nearest,
+                    Intersect = true
+                },
+                Scales = new Scales
+                {
+                    XAxes = new List<CartesianAxis>
 {
                         new LinearCartesianAxis
                         {
@@ -61,7 +68,7 @@
                             }
                         }
                     },
-                        YAxes = new List<CartesianAxis>
+                    YAxes = new List<CartesianAxis>
 {
                         new LinearCartesianAxis
                         {
@@ -71,23 +78,24 @@
                             }
                         }
                     }
-                    }
                 }
-            };
-            List<Point> s = new List<Point>();
+            }
+        };
+        List<Point> s = new List<Point>();
 
-            IDataset<Point> dataset1 = new LineDataset<Point>(s)
-            {
-                Label = "My first dataset",
-                BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
-                BorderColor = ColorUtil.ColorHexString(252, 3, 3),
-                Fill = FillingMode.Disabled,
-                PointBorderWidth = 0,
-                SteppedLine = SteppedLine.False,
-                LineTension = 0,
+        IDataset<Point> dataset1 = new LineDataset<Point>(s)
+        {
+            Label = "Calories burn",
+            BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
+            BorderColor = ColorUtil.ColorHexString(252, 3, 3),
+            Fill = FillingMode.Disabled,
+            PointBorderWidth = 0,
+            SteppedLine = SteppedLine.False,
+            LineTension = 0,
         };
 
         _config.Data.Datasets.Add(dataset1);
+        Update();
     }
 
 
@@ -95,29 +103,26 @@
 
     async void Update()
     {
-        Point a = new Point(1, 2);
-        Point b = new Point(2, 3);
         dataset1 = (IDataset<Point>)_config.Data.Datasets[0];
         dataset1.Clear();
 
-        List<double> calories = await LocalActivityServices.GetCalories(1);
+        List<CaloriesGraph> calories = await LocalActivityServices.GetCalories(trainingId);
 
-        int i = 0;
+        calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
+
+
+        double PreviousTime = 0;
         foreach (var y in calories)
         {
-            if (y != 0)
+            if (y.Calories != 0)
             {
-                dataset1.Add((new Point(i, y)));
-                i++;
+                dataset1.Add((new Point((double)y.Time, y.Calories)));
+                //dataset1.Add((new Point((double)y.Time, y.Calories)));
+                PreviousTime = y.Time;
             }
         }
 
         _config.Data.Datasets[0] = dataset1;
-
-
-        //dataset1.Clear();
-        //dataset1.Add(a);
-        //dataset1.Add(b);
 
         _chart.Update();
     }

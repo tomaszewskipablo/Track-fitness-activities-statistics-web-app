@@ -68,12 +68,10 @@ namespace Common.DAL.Context
 
             modelBuilder.Entity<TrainingData>(entity =>
             {
-                entity.Property(e => e.Time).HasColumnType("datetime");
-
                 entity.HasOne(d => d.TrainingSession)
                     .WithMany(p => p.TrainingData)
                     .HasForeignKey(d => d.TrainingSessionId)
-                    .HasConstraintName("FK__TrainingD__Trenn__6E01572D");
+                    .HasConstraintName("FK__TrainingD__Train__06CD04F7");
             });
 
             modelBuilder.Entity<TrainingSession>(entity =>
@@ -83,12 +81,12 @@ namespace Common.DAL.Context
                 entity.HasOne(d => d.Sport)
                     .WithMany(p => p.TrainingSession)
                     .HasForeignKey(d => d.SportId)
-                    .HasConstraintName("FK__TrainingS__Sport__6B24EA82");
+                    .HasConstraintName("FK__TrainingS__Sport__03F0984C");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.TrainingSession)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__TrainingS__UserI__6A30C649");
+                    .HasConstraintName("FK__TrainingS__UserI__02FC7413");
             });
 
             modelBuilder.Entity<Users>(entity =>

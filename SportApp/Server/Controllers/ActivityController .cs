@@ -31,18 +31,16 @@ namespace SportApp.Server.Controllers
 
         [Authorize]
         [HttpPost("Process")]
-        public void ProcessActivity([FromBody] Activity activity)
+        public int ProcessActivity([FromBody] Activity activity)
         {
-            _activityServices.ProcessActivity(activity);
+            return _activityServices.ProcessActivity(activity);
         }
 
         [Authorize]
         [HttpGet("Calories")]
         public IActionResult GetCalories(int trainingSessionId)
         {
-            trainingSessionId = 5;
             var sports = _activityServices.GetCalories(trainingSessionId);
-            //var dto = _mapper.Map<IEnumerable<SportDTOCombobox>>(sports);
             return Ok(sports);
         }
     }

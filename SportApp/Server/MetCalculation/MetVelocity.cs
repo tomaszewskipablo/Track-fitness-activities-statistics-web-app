@@ -10,9 +10,8 @@ namespace SportApp.Server.MetCalculation
     {
         public double MetBasedOnVelocity(List<Met> metTable, double velocity)
         {
-            // sortuj first
             int j = 0;
-            while (metTable[j].MaxSpeedkmh < velocity)
+            while (metTable[j].Speedkmh < velocity)
             {
                 j++;
                 if (j == metTable.Count)
@@ -20,10 +19,11 @@ namespace SportApp.Server.MetCalculation
             }         
             if (j == 0)    // jesli predkosc mniejsza niz minimalna przewidziana w tabeli
                 return metTable[0].Value;
-            
+            if(j == metTable.Count) // jesli predkosc wieksza
+                return metTable[metTable.Count - 1].Value;
 
-            double lowerSpeed = (double)metTable[j-1].MaxSpeedkmh;
-            double fasterSpeed = (double)metTable[j].MaxSpeedkmh;
+            double lowerSpeed = (double)metTable[j-1].Speedkmh;
+            double fasterSpeed = (double)metTable[j].Speedkmh;
 
             double lowerMet = (double)metTable[j-1].Value;
             double fasterMet = (double)metTable[j].Value;
