@@ -161,7 +161,7 @@ namespace SportApp.Server.Services
 
         public List<CaloriesGraph> GetCalories(int trainingSessionId)
         {
-            List<CaloriesGraph> calories = _unitOfWork.TrainingDataRepository.Get(x => x.TrainingSessionId == trainingSessionId).Select(x => new CaloriesGraph(x.Calories, (double)x.Time)).ToList();
+            List<CaloriesGraph> calories = _unitOfWork.TrainingDataRepository.Get(x => x.TrainingSessionId == trainingSessionId).Select(x => new CaloriesGraph((double)x.Calories, (double)x.Time)).ToList();
 
             return calories;
         }

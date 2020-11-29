@@ -10,6 +10,9 @@ namespace SportApp.Server.MetCalculation
     {
         public double MetBasedOnVelocity(List<Met> metTable, double velocity)
         {
+            if (velocity < 0.5)
+                return 2;
+
             int j = 0;
             while (metTable[j].Speedkmh < velocity)
             {
