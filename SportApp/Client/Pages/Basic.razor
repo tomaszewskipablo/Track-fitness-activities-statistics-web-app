@@ -109,7 +109,7 @@
         List<CaloriesGraph> calories = await LocalActivityServices.GetCalories(trainingId);
 
         calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
-
+        
 
         double PreviousTime = 0;
         foreach (var y in calories)

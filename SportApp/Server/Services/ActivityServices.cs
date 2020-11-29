@@ -139,7 +139,7 @@ namespace SportApp.Server.Services
                     Met = metVelocity.MetBasedOnVelocity(MetTable, (double)point.Velocitykmh);
 
                     CorrectedMet = Met * 3.5 / CorrectedMetcoefficent;
-                    point.Calories = CorrectedMet * Weight * trackDuration / 3600; // kcal = CorectedMET * kg * h
+                    point.Calories = CorrectedMet * Weight * time / 3600; // kcal = CorectedMET * kg * h
                     point.Time = timeFromBegening;
                     point.TrainingSessionId = TrainingSession.Id;
 

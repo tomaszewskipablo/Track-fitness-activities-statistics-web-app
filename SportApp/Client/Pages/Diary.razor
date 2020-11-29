@@ -3,6 +3,7 @@
 @using System.Net.Http.Headers
 @using SportApp.Shared.Services;
 @using System.IO;
+@using System;
 @using SportApp.Shared.ViewModel;
 @using System.Xml.Serialization;
 @using SportApp.Shared;
@@ -31,9 +32,9 @@
     <br />
     <MatIconButton Icon="directions_run" @onclick="RunningCliked"></MatIconButton>
     <MatIconButton Icon="directions_bike" @onclick="BikingCliked"></MatIconButton>
-    <MatIconButton Icon="pool" @onclick="s"></MatIconButton>
-    <MatIconButton Icon="directions_walk" @onclick="s"></MatIconButton>
-    <MatIconButton Icon="fitness_center" @onclick="s"></MatIconButton>
+    <MatIconButton Icon="pool" @onclick="SwimmingClicked"></MatIconButton>
+    <MatIconButton Icon="directions_walk" @onclick="WalkingClicked"></MatIconButton>
+    <MatIconButton Icon="fitness_center" @onclick="ResitanceTrainingClicked"></MatIconButton>
     <MatIconButton Icon="rowing" @onclick="RowingCliked"></MatIconButton>
     @if (Sports != null)
     {
@@ -45,7 +46,7 @@
     }
     <p>
         <MatButton Outlined="true" @onclick="Upload">Upload</MatButton>
-    </p>            
+    </p>
 </div>
 
 <p style="margin-top:10x">
@@ -61,7 +62,7 @@
     SportDTOCombobox[] Sports;
     private string _statusClass;
     private string _errorMessage;
-    int trainingId=0;
+    int trainingId = 0;
 
     protected override void OnInitialized()
     {
@@ -82,6 +83,7 @@
         }
 
         Sports = await LocalSportServices.GetSports();
+        Array.Sort(Sports, (t1, t2) => t1.Name.CompareTo(t2.Name));
 
         StateHasChanged();
     }
@@ -121,9 +123,25 @@
 
     void RowingCliked()
     {
-        SportId = 6;
-        NavigationManager.NavigateTo("/basic");
+        SportId = 7;
     }
+
+    void SwimmingClicked()
+    {
+        SportId = 8;
+        StateHasChanged();
+    }
+
+    void ResitanceTrainingClicked()
+    {
+        SportId = 17;
+    }
+
+    void WalkingClicked()
+    {
+        SportId = 3;
+    }
+
 
     void s() { }
     async void Upload()
