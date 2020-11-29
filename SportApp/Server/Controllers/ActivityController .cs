@@ -43,5 +43,13 @@ namespace SportApp.Server.Controllers
             var sports = _activityServices.GetCalories(trainingSessionId);
             return Ok(sports);
         }
+
+        [Authorize]
+        [HttpGet("Session")]
+        public IActionResult GetTrainingSession(int userId)
+        {
+            var sports = _activityServices.GetTrainingSession(userId);
+            return Ok(sports);
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace SportApp.Shared.Services
         public void PostActivity(Activity activity);
         public Task<int> ProcessActivity(Activity activity);
         public Task<List<CaloriesGraph>> GetCalories(int trainingSession);
+        public Task<List<TrainingSessionDTO>> GetTrainingSession(int user);
     }
 }
 

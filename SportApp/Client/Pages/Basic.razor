@@ -18,10 +18,9 @@
 
 @inject IActivityServices LocalActivityServices
 
-<Chart Config="_config" @ref="_chart"></Chart>
+@*<button @onclick="Update"></button>*@
 
-<button @onclick="Update"></button>
-
+    <Chart Config="_config" Height="80" @ref="_chart"></Chart>
 
 @code {
 
@@ -109,7 +108,7 @@
         List<CaloriesGraph> calories = await LocalActivityServices.GetCalories(trainingId);
 
         calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
-        
+
 
         double PreviousTime = 0;
         foreach (var y in calories)

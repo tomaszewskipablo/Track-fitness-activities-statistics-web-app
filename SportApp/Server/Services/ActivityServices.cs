@@ -16,6 +16,7 @@ namespace SportApp.Server.Services
         public void PostActivityStats(TrainingSession TrainingSession);
         public int ProcessActivity(Activity activity);
         public List<CaloriesGraph> GetCalories(int trainingSessionId);
+        public List<TrainingSession> GetTrainingSession(int usernId);
     }
 
     public class ActivityServices : IActivityServices
@@ -162,6 +163,13 @@ namespace SportApp.Server.Services
         public List<CaloriesGraph> GetCalories(int trainingSessionId)
         {
             List<CaloriesGraph> calories = _unitOfWork.TrainingDataRepository.Get(x => x.TrainingSessionId == trainingSessionId).Select(x => new CaloriesGraph((double)x.Calories, (double)x.Time)).ToList();
+
+            return calories;
+        }
+
+        public List<TrainingSession> GetTrainingSession(int usernId)
+        {
+            List<TrainingSession> calories = _unitOfWork.TrainingSessionRepository.Get(x => x.UserId == usernId).ToList();
 
             return calories;
         }

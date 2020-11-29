@@ -36,4 +36,8 @@
     <ProjectReference Include="..\Shared\SportApp.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\" />
+  </ItemGroup>
+
 </Project>

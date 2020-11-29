@@ -5,6 +5,7 @@
 @using System.IO;
 @using System;
 @using SportApp.Shared.ViewModel;
+
 @using System.Xml.Serialization;
 @using SportApp.Shared;
 
@@ -16,53 +17,39 @@
 @inject ISportServices LocalSportServices
 @inject HttpClient http
 
-
-<div class="mat-elevation-z1" style="padding: 20px">
-
-    <div style="color:white">
-        <InputFile OnChange="HandleFileSelected" /><br />
-    </div>
-
-    <div style="font-size:12px">tcx files supported</div>
-    <div style="font-size:12px">@file?.Name</div>
-    <br />
-    <br />
-
-    Choose sport, less popular sports can be found in combobox:
-    <br />
-    <MatIconButton Icon="directions_run" @onclick="RunningCliked"></MatIconButton>
-    <MatIconButton Icon="directions_bike" @onclick="BikingCliked"></MatIconButton>
-    <MatIconButton Icon="pool" @onclick="SwimmingClicked"></MatIconButton>
-    <MatIconButton Icon="directions_walk" @onclick="WalkingClicked"></MatIconButton>
-    <MatIconButton Icon="fitness_center" @onclick="ResitanceTrainingClicked"></MatIconButton>
-    <MatIconButton Icon="rowing" @onclick="RowingCliked"></MatIconButton>
-    @if (Sports != null)
-    {
-        <MatSelectValue @bind-Value="SportId" Items="@Sports" ValueSelector="@(i=>i.Id)">
-            <ItemTemplate>
-                <span>@context?.Name</span>
-            </ItemTemplate>
-        </MatSelectValue>
-    }
-    <p>
-        <MatButton Outlined="true" @onclick="Upload">Upload</MatButton>
-    </p>
-</div>
-
-<p style="margin-top:10x">
-    <div class="alert @_statusClass">@_errorMessage</div>
-</p>
-
 <Basic @bind-trainingId="@trainingId"></Basic>
+
+<MatTable Style="font-size:13px; padding:0px" Items="@sortedData" class="mat-elevation-z5" ShowPaging="true" UseSortHeaderRow="true" OnRowDbClick="OnPersonDbClicked" AllowSelection="true">
+    <MatTableHeader>
+        <MatSortHeaderRow Style="font-size:13px; padding:0px" SortChanged="@SortData">
+            @*<MatSortHeader SortId="DistanceMeters"><span style="width:600px">Dessert (100g)</span></MatSortHeader>*@
+            <MatSortHeader SortId="date"><span style="width:180px">Starting time</span> </MatSortHeader>
+            <MatSortHeader SortId="distanceMeters"><span style="width:180px">Distance Meters</span></MatSortHeader>
+            <MatSortHeader SortId="velocity">Velocity</MatSortHeader>
+            <MatSortHeader SortId="calories">Calories</MatSortHeader>
+            @*<MatSortHeader SortId="carbs">Carbs (g)</MatSortHeader>
+                <MatSortHeader SortId="protein">Protein (g)</MatSortHeader>*@
+        </MatSortHeaderRow>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.StartingTime</td>
+        <td>@context.DistanceMeters</td>
+        <td>@context.AverageVelocitykmh</td>
+        <td>@context.Calories</td>
+    </MatTableRow>
+</MatTable>
+
+
 
 @code {
     string token;
     int UserId;
-    int SportId = -1;
-    SportDTOCombobox[] Sports;
+
+    List<TrainingSessionDTO> TrainingListA;
+    TrainingSessionDTO[] TrainingList;
     private string _statusClass;
     private string _errorMessage;
-    int trainingId = 0;
+    int trainingId = 102;
 
     protected override void OnInitialized()
     {
@@ -82,88 +69,69 @@
             LoginState.LoggedIn = false;
         }
 
-        Sports = await LocalSportServices.GetSports();
-        Array.Sort(Sports, (t1, t2) => t1.Name.CompareTo(t2.Name));
+
+
+        TrainingListA = await LocalActivityServices.GetTrainingSession(UserId);
+        TrainingList = TrainingListA.ToArray();
+
+        SortData(null);
 
         StateHasChanged();
     }
 
-    IFileListEntry file;
-    Activity activity;
 
-    async Task HandleFileSelected(IFileListEntry[] files)
+
+    void SortData(MatSortChangedEvent sort)
     {
-        file = files.FirstOrDefault();
-
-
-
-        using (var stream2 = new MemoryStream())
+        sortedData = TrainingList.ToArray();
+        if (!(sort == null || sort.Direction == MatSortDirection.None || string.IsNullOrEmpty(sort.SortId)))
         {
-            await file.Data.CopyToAsync(stream2);   // although file.Data is itself a stream, using it directly causes "synchronous reads are not supported" errors below.
-            stream2.Seek(0, SeekOrigin.Begin);      // at the end of the copy method, we are at the end of both the input and output stream and need to reset the one we want to work with.
-            var reader = new System.IO.StreamReader(stream2);
-
-            activity = GarminUtils.ConvertTCS(stream2);
-        }
-
-        _errorMessage = "";
-        _statusClass = "";
-    }
-
-    void RunningCliked()
-    {
-        SportId = 2;
-        StateHasChanged();
-    }
-
-    void BikingCliked()
-    {
-        SportId = 1;
-    }
-
-    void RowingCliked()
-    {
-        SportId = 7;
-    }
-
-    void SwimmingClicked()
-    {
-        SportId = 8;
-        StateHasChanged();
-    }
-
-    void ResitanceTrainingClicked()
-    {
-        SportId = 17;
-    }
-
-    void WalkingClicked()
-    {
-        SportId = 3;
-    }
-
-    async void Upload()
-    {
-        if (activity != null)
-        {
-            if (SportId > 0)
+            Comparison<TrainingSessionDTO> comparison = null;
+            switch (sort.SortId)
             {
-                activity.Id = SportId;
-                activity.UserId = UserId;
-                trainingId = await LocalActivityServices.ProcessActivity(activity);
-                StateHasChanged();
+                case "date":
+                    comparison = (s1, s2) => s1.StartingTime.CompareTo(s2.StartingTime);
+                    break;
+                case "distanceMeters":
+                    comparison = (s1, s2) => s1.DistanceMeters.CompareTo(s2.DistanceMeters);
+                    break;
+                case "calories":
+                    comparison = (s1, s2) => s1.Calories.CompareTo(s2.Calories);
+                    break;
+                case "velocity":
+                    comparison = (s1, s2) => s1.AverageVelocitykmh.CompareTo(s2.AverageVelocitykmh);
+                    break;
             }
+            if (comparison != null)
+            {
+                if (sort.Direction == MatSortDirection.Desc)
+                {
+                    Array.Sort(sortedData, (s1, s2) => -1 * comparison(s1, s2));
+                }
+                else
+                {
+                    Array.Sort(sortedData, comparison);
+                }
+            }
+        }
+    }
+
+    void OnPersonDbClicked(object item)
+    {
+        var trainingChoosen = item as TrainingSessionDTO;
+        trainingId = trainingChoosen.Id;
+        if (trainingChoosen == null)
+        {
+            if (sortedData[0] != null)
+                trainingId = sortedData[0].Id;
             else
-            {
-                _errorMessage = "Choose sport type";
-                _statusClass = "alert-danger";
-            }
-        }
-        else
-        {
-            _errorMessage = "Upload training file";
-            _statusClass = "alert-danger";
+                trainingId = 0;
+            return;
         }
 
+        StateHasChanged();
     }
+
+    TrainingSessionDTO[] sortedData = null;
+
 }

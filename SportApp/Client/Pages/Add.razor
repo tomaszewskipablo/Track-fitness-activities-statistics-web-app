@@ -1,0 +1,169 @@
+﻿@page "/add"
+
+@using System.Net.Http.Headers
+@using SportApp.Shared.Services;
+@using System.IO;
+@using System;
+@using SportApp.Shared.ViewModel;
+@using System.Xml.Serialization;
+@using SportApp.Shared;
+
+@inject SportApp.Client.LoginLogic.LoginState LoginState
+@inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject ILoginServices LocalLoginServices
+@inject IActivityServices LocalActivityServices
+@inject ISportServices LocalSportServices
+@inject HttpClient http
+
+
+<div class="mat-elevation-z1" style="padding: 20px">
+
+    <div style="color:white">
+        <InputFile OnChange="HandleFileSelected" /><br />
+    </div>
+
+    <div style="font-size:12px">tcx files supported</div>
+    <div style="font-size:12px">@file?.Name</div>
+    <br />
+    <br />
+
+    Choose sport, less popular sports can be found in combobox:
+    <br />
+    <MatIconButton Icon="directions_run" @onclick="RunningCliked"></MatIconButton>
+    <MatIconButton Icon="directions_bike" @onclick="BikingCliked"></MatIconButton>
+    <MatIconButton Icon="pool" @onclick="SwimmingClicked"></MatIconButton>
+    <MatIconButton Icon="directions_walk" @onclick="WalkingClicked"></MatIconButton>
+    <MatIconButton Icon="fitness_center" @onclick="ResitanceTrainingClicked"></MatIconButton>
+    <MatIconButton Icon="rowing" @onclick="RowingCliked"></MatIconButton>
+    @if (Sports != null)
+    {
+        <MatSelectValue @bind-Value="SportId" Items="@Sports" ValueSelector="@(i=>i.Id)">
+            <ItemTemplate>
+                <span>@context?.Name</span>
+            </ItemTemplate>
+        </MatSelectValue>
+    }
+    <p>
+        <MatButton Outlined="true" @onclick="Upload">Upload</MatButton>
+    </p>
+</div>
+
+<p style="margin-top:10x">
+    <div class="alert @_statusClass">@_errorMessage</div>
+</p>
+
+<Basic @bind-trainingId="@trainingId"></Basic>
+
+@code {
+    string token;
+    int UserId;
+    int SportId = -1;
+    SportDTOCombobox[] Sports;
+    private string _statusClass;
+    private string _errorMessage;
+    int trainingId = 0;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserId = await localStorage.GetItemAsync<int>("Id");
+        token = await localStorage.GetItemAsync<string>("Token");
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        // needs to be automized
+        if (UserId == 0)
+        {
+            NavigationManager.NavigateTo("/");
+            LoginState.LoggedIn = false;
+        }
+
+        Sports = await LocalSportServices.GetSports();
+        Array.Sort(Sports, (t1, t2) => t1.Name.CompareTo(t2.Name));
+
+        StateHasChanged();
+    }
+
+    IFileListEntry file;
+    Activity activity;
+
+    async Task HandleFileSelected(IFileListEntry[] files)
+    {
+        file = files.FirstOrDefault();
+
+
+
+        using (var stream2 = new MemoryStream())
+        {
+            await file.Data.CopyToAsync(stream2);   // although file.Data is itself a stream, using it directly causes "synchronous reads are not supported" errors below.
+            stream2.Seek(0, SeekOrigin.Begin);      // at the end of the copy method, we are at the end of both the input and output stream and need to reset the one we want to work with.
+            var reader = new System.IO.StreamReader(stream2);
+
+            activity = GarminUtils.ConvertTCS(stream2);
+        }
+
+        _errorMessage = "";
+        _statusClass = "";
+    }
+
+    void RunningCliked()
+    {
+        SportId = 2;
+        StateHasChanged();
+    }
+
+    void BikingCliked()
+    {
+        SportId = 1;
+    }
+
+    void RowingCliked()
+    {
+        SportId = 7;
+    }
+
+    void SwimmingClicked()
+    {
+        SportId = 8;
+        StateHasChanged();
+    }
+
+    void ResitanceTrainingClicked()
+    {
+        SportId = 17;
+    }
+
+    void WalkingClicked()
+    {
+        SportId = 3;
+    }
+
+    async void Upload()
+    {
+        if (activity != null)
+        {
+            if (SportId > 0)
+            {
+                activity.Id = SportId;
+                activity.UserId = UserId;
+                trainingId = await LocalActivityServices.ProcessActivity(activity);
+                StateHasChanged();
+            }
+            else
+            {
+                _errorMessage = "Choose sport type";
+                _statusClass = "alert-danger";
+            }
+        }
+        else
+        {
+            _errorMessage = "Upload training file";
+            _statusClass = "alert-danger";
+        }
+
+    }
+}
