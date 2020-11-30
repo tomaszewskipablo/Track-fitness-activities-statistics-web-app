@@ -58,6 +58,9 @@ namespace SportApp.Server.Services
                 TrainingSession.DistanceMeters += lap.DistanceMeters;
                 TrainingSession.AverageHeartRateBpm += lap.AverageHeartRateBpm;
             }
+            if (TrainingSession.DistanceMeters == 0)
+                if (_unitOfWork.SportRepository.GetByID(activity.Id).IsVelocity)
+                    return -1;
 
             TrainingSession.AverageVelocitykmh = (double)(TrainingSession.DistanceMeters / TrainingSession.DurationSeconds * 3.6);
             // TRAINING SESSION Agregacja
@@ -92,7 +95,7 @@ namespace SportApp.Server.Services
                 trainingData.Calories = CorrectedMet * Weight / 60; // average for minute
                 _unitOfWork.TrainingDataRepository.Insert(trainingData);
                 _unitOfWork.TrainingSessionRepository.Update(TrainingSession);
-                _unitOfWork.Save();                
+                _unitOfWork.Save();
             }
             else
             {
@@ -108,6 +111,9 @@ namespace SportApp.Server.Services
                         }
                     }
                 }
+
+                if (Training.Count < 1)                    
+                        return -1;
 
                 int trackDuration = (int)Training.Count / 100;   // co ile pomiarów wpis do bazy
                 //if (Training.Count < trackDuration)   // jesli ilosc pomiarow mniejsza nic trackDuration to policzmy 2 odcinki przynajmniej

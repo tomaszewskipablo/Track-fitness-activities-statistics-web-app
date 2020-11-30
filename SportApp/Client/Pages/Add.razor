@@ -160,6 +160,13 @@
                 activity.Id = SportId;
                 activity.UserId = UserId;
                 trainingId = await LocalActivityServices.ProcessActivity(activity);
+                if (trainingId == -1) // error
+                {
+                    _errorMessage = "You have choosen wrong sport type or uploaded file is damaged";
+                    _statusClass = "alert-danger";
+                    return;
+                }
+
                 StateHasChanged();
                 NavigationManager.NavigateTo("/diary");
             }

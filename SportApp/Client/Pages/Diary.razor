@@ -22,17 +22,35 @@
 <MatTable Style="font-size:13px; padding:0px" Items="@sortedData" class="mat-elevation-z5" ShowPaging="true" UseSortHeaderRow="true" SelectionChanged="SelectionChangedEvent" AllowSelection="true">
     <MatTableHeader>
         <MatSortHeaderRow Style="font-size:13px; padding:0px" SortChanged="@SortData">
-            @*<MatSortHeader SortId="DistanceMeters"><span style="width:600px">Dessert (100g)</span></MatSortHeader>*@
+            <MatSortHeader SortId="sport">Sport</MatSortHeader>
             <MatSortHeader SortId="date"><span style="width:180px">Starting time</span> </MatSortHeader>
             <MatSortHeader SortId="distanceMeters"><span style="width:180px">Distance</span></MatSortHeader>
             <MatSortHeader SortId="velocity">Velocity</MatSortHeader>
             <MatSortHeader SortId="duration">Duration</MatSortHeader>
             <MatSortHeader SortId="calories">Calories</MatSortHeader>
-            @*<MatSortHeader SortId="carbs">Carbs (g)</MatSortHeader>
-                <MatSortHeader SortId="protein">Protein (g)</MatSortHeader>*@
         </MatSortHeaderRow>
     </MatTableHeader>
     <MatTableRow>
+        <center>
+            <div style="padding-right:12px;">
+                @if (context.SportId == 1)
+                {<td style="border:none"><MatIcon Icon="directions_bike"></MatIcon></td>}
+                else if (context.SportId == 2)
+                {<td style="border:none"><MatIcon Icon="directions_run"></MatIcon></td>}
+                else if (context.SportId == 3)
+                {<td><MatIcon Icon="directions_walk"></MatIcon></td>}
+                else if (context.SportId == 7)
+                {<td><MatIcon Icon="rowing"></MatIcon></td>}
+                else if (context.SportId == 17)
+                {<td><MatIcon Icon="fitness_center"></MatIcon></td>}
+                else if (context.SportId == 8)
+                {<td><MatIcon Icon="pool"></MatIcon></td>}
+                else
+                {<td>@context.SportName</td>}
+            </div>
+        </center>
+
+
         <td>@context.StartingTime</td>
         <td>@Math.Round(context.DistanceMeters / 1000, 2, MidpointRounding.AwayFromZero) km</td>
         <td>@Math.Round(context.AverageVelocitykmh, 2, MidpointRounding.AwayFromZero) km/h</td>
@@ -102,6 +120,12 @@
                     break;
                 case "velocity":
                     comparison = (s1, s2) => s1.AverageVelocitykmh.CompareTo(s2.AverageVelocitykmh);
+                    break;
+                case "duration":
+                    comparison = (s1, s2) => s1.DurationSeconds.CompareTo(s2.DurationSeconds);
+                    break;
+                case "sport":
+                    comparison = (s1, s2) => s1.SportId.CompareTo(s2.SportId);
                     break;
             }
             if (comparison != null)

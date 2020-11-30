@@ -8,6 +8,7 @@ namespace SportApp.Shared.ViewModel
         public int Id { get; set; }
         public int UserId { get; set; }
         public int SportId { get; set; }
+        public string SportName { get; set; }
         public DateTime StartingTime { get; set; }
         public double DistanceMeters { get; set; }
         public double AverageVelocitykmh { get; set; }

@@ -3,6 +3,8 @@ using SportApp.Server.Services;
 using Common.DAL.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using SportApp.Shared.ViewModel;
+using System.Collections.Generic;
 
 namespace SportApp.Server.Controllers
 {
@@ -48,8 +50,10 @@ namespace SportApp.Server.Controllers
         [HttpGet("Session")]
         public IActionResult GetTrainingSession(int userId)
         {
-            var sports = _activityServices.GetTrainingSession(userId);
-            return Ok(sports);
+            var trainingSessions = _activityServices.GetTrainingSession(userId);
+            return Ok(trainingSessions);
+            //var dto = _mapper.Map<IEnumerable<TrainingSessionDTO>>(trainingSessions);
+            //return Ok(dto);
         }
     }
 }
