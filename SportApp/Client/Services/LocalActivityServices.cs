@@ -46,13 +46,13 @@ namespace SportApp.Client.Services
             return JsonConvert.DeserializeObject<List<CaloriesGraph>>(jsonResultGetAll);
         }
 
-        public async Task<List<TrainingSessionDTO>> GetTrainingSession(int user)
+        public async Task<TrainingSessionDTO[]> GetTrainingSession(int user)
         {
             var resultGetAll = await _http.GetAsync("Activity/Session?userId=" + user);
             if (!resultGetAll.IsSuccessStatusCode)
-                return new List<TrainingSessionDTO>();
+                return new TrainingSessionDTO[] { };
             var jsonResultGetAll = await resultGetAll.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<List<TrainingSessionDTO>>(jsonResultGetAll);
+            return JsonConvert.DeserializeObject<TrainingSessionDTO[]>(jsonResultGetAll);
         }
 
         public async Task<List<CaloriesGraph>> GetVelocity(int trainingSession)

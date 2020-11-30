@@ -5,8 +5,7 @@
 @using System.IO;
 @using System;
 @using SportApp.Shared.ViewModel;
-@using System.Xml.Serialization;
-@using SportApp.Shared;
+ 
 
 @inject SportApp.Client.LoginLogic.LoginState LoginState
 @inject NavigationManager NavigationManager
@@ -25,6 +24,10 @@
 
     <div style="font-size:12px">tcx files supported</div>
     <div style="font-size:12px">@file?.Name</div>
+    <div style="width:150px">
+        <MatProgressBar Indeterminate="@progress" Closed="close"></MatProgressBar>
+    </div>
+
     <br />
     <br />
 
@@ -63,6 +66,8 @@
     private string _statusClass;
     private string _errorMessage;
     int trainingId = 0;
+    bool progress = false;
+    bool close = false;
 
     protected override void OnInitialized()
     {
@@ -93,6 +98,9 @@
 
     async Task HandleFileSelected(IFileListEntry[] files)
     {
+        progress = true;
+        close = false;
+
         file = files.FirstOrDefault();
 
 
@@ -105,7 +113,8 @@
 
             activity = GarminUtils.ConvertTCS(stream2);
         }
-
+        progress = true;
+        close = true;
         _errorMessage = "";
         _statusClass = "";
     }

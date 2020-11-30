@@ -29,7 +29,7 @@
             <MatSortHeader SortId="duration">Duration</MatSortHeader>
             <MatSortHeader SortId="calories">Calories</MatSortHeader>
             @*<MatSortHeader SortId="carbs">Carbs (g)</MatSortHeader>
-        <MatSortHeader SortId="protein">Protein (g)</MatSortHeader>*@
+                <MatSortHeader SortId="protein">Protein (g)</MatSortHeader>*@
         </MatSortHeaderRow>
     </MatTableHeader>
     <MatTableRow>
@@ -73,17 +73,14 @@
             LoginState.LoggedIn = false;
         }
 
+        TrainingList = await LocalActivityServices.GetTrainingSession(UserId);
 
-
-        TrainingListA = await LocalActivityServices.GetTrainingSession(UserId);
-
-        TrainingList = TrainingListA.ToArray();
-        basic.Update(trainingId);
+        if (TrainingList.Length > 0)
+            basic.Update(TrainingList[0].Id);
         SortData(null);
 
         StateHasChanged();
     }
-
 
 
     void SortData(MatSortChangedEvent sort)

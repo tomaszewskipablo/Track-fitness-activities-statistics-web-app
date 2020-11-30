@@ -15,7 +15,7 @@ namespace SportApp.Server.Services
         public void PostActivityStats(TrainingSession TrainingSession);
         public int ProcessActivity(Activity activity);
         public List<CaloriesGraph> GetCalories(int trainingSessionId);
-        public List<TrainingSession> GetTrainingSession(int usernId);
+        public TrainingSession[] GetTrainingSession(int usernId);
     }
 
     public class ActivityServices : IActivityServices
@@ -152,6 +152,8 @@ namespace SportApp.Server.Services
 
 
                 TrainingSession.Calories = CaloriesALL;
+                TrainingSession.DurationSeconds = timeFromBegening;
+                TrainingSession.AverageVelocitykmh = timeFromBegening / Training.LastOrDefault().DistanceMeters;
 
                 _unitOfWork.TrainingSessionRepository.Update(TrainingSession);
                 _unitOfWork.Save();
@@ -166,9 +168,9 @@ namespace SportApp.Server.Services
             return calories;
         }
 
-        public List<TrainingSession> GetTrainingSession(int usernId)
+        public TrainingSession[] GetTrainingSession(int usernId)
         {
-            List<TrainingSession> calories = _unitOfWork.TrainingSessionRepository.Get(x => x.UserId == usernId).ToList();
+            TrainingSession[] calories = _unitOfWork.TrainingSessionRepository.Get(x => x.UserId == usernId).OrderByDescending(x => x.StartingTime).ToArray();
 
             return calories;
         }
