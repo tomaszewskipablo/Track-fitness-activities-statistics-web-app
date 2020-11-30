@@ -18,9 +18,8 @@
 
 @inject IActivityServices LocalActivityServices
 
-@*<button @onclick="Update"></button>*@
 
-    <Chart Config="_config" Height="80" @ref="_chart"></Chart>
+<Chart Config="_config" Height="80" @ref="_chart"></Chart>
 
 @code {
 
@@ -84,7 +83,7 @@
 
         IDataset<Point> dataset1 = new LineDataset<Point>(s)
         {
-            Label = "Calories burn",
+            Label = "Calories burnt",
             BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
             BorderColor = ColorUtil.ColorHexString(252, 3, 3),
             Fill = FillingMode.Disabled,
@@ -94,13 +93,13 @@
         };
 
         _config.Data.Datasets.Add(dataset1);
-        Update();
+        Update(trainingId);
     }
 
 
     IDataset<Point> dataset1;
 
-    async void Update()
+    public async void Update(int trainingId)
     {
         dataset1 = (IDataset<Point>)_config.Data.Datasets[0];
         dataset1.Clear();
@@ -109,7 +108,7 @@
 
         calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
 
-
+        
         double PreviousTime = 0;
         foreach (var y in calories)
         {
@@ -125,6 +124,5 @@
 
         _chart.Update();
     }
-
 }
 

@@ -152,6 +152,7 @@
                 activity.UserId = UserId;
                 trainingId = await LocalActivityServices.ProcessActivity(activity);
                 StateHasChanged();
+                NavigationManager.NavigateTo("/diary");
             }
             else
             {

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SportApp.Server.MetCalculation;
-using SportApp.Shared.ViewModel;
 
 
 namespace SportApp.Server.Services
