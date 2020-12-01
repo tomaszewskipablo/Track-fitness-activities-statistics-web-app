@@ -41,7 +41,7 @@
                 Responsive = true,
                 Title = new OptionsTitle
                 {
-                    Display = true,
+                    Display = false,
                     Text = "Calories"
                 },
                 Tooltips = new Tooltips
@@ -62,7 +62,8 @@
                         {
                             ScaleLabel = new ScaleLabel
                             {
-                                LabelString = "Month"
+                                Display = true,
+                                LabelString = "Month"                                
                             }
                         }
                     },
@@ -72,7 +73,8 @@
                         {
                             ScaleLabel = new ScaleLabel
                             {
-                                LabelString = "Value"
+                                Display = true,
+                                LabelString = "Calories burnt/min"
                             }
                         }
                     }
@@ -89,7 +91,9 @@
             Fill = FillingMode.Disabled,
             PointBorderWidth = 0,
             SteppedLine = SteppedLine.False,
-            LineTension = 0,
+            LineTension = 0.6,
+            //PointStyle = PointStyle.Line,
+            BorderWidth = 1,
         };
 
         _config.Data.Datasets.Add(dataset1);
@@ -108,7 +112,7 @@
 
         calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
 
-        
+
         double PreviousTime = 0;
         foreach (var y in calories)
         {

@@ -128,15 +128,19 @@ namespace SportApp.Server.Services
                 MetTable.Sort((t1, t2) => t1.Value.CompareTo(t2.Value));
 
                 int numberOfPoints = Training.Count / trackDuration;
+                int lastPeriod = 0;
 
                 for (int i = 1; i < numberOfPoints; i++)
                 {
+                    if(i == numberOfPoints - 1) // ostatnia iteracja
+                        lastPeriod = Training.Count - (numberOfPoints * trackDuration);
+
                     TrainingData point = new TrainingData();
                     point.DistanceMeters = 0;
 
-                    double time = (DateTime.Parse(Training[i * trackDuration].Timex) - DateTime.Parse(Training[(i - 1) * trackDuration].Timex)).TotalSeconds; // czas odcinka
+                    double time = (DateTime.Parse(Training[i * trackDuration + lastPeriod].Timex) - DateTime.Parse(Training[(i - 1) * trackDuration].Timex)).TotalSeconds; // czas odcinka
                     timeFromBegening += time;
-                    point.Velocitykmh = (Training[i * trackDuration].DistanceMeters - PreviousDistance) / time * 3.6;
+                    point.Velocitykmh = (Training[i * trackDuration + lastPeriod].DistanceMeters - PreviousDistance) / time * 3.6;
                     PreviousDistance = Training[i * trackDuration].DistanceMeters;
 
 
@@ -159,7 +163,7 @@ namespace SportApp.Server.Services
 
                 TrainingSession.Calories = CaloriesALL;
                 TrainingSession.DurationSeconds = timeFromBegening;
-                TrainingSession.AverageVelocitykmh = timeFromBegening / Training.LastOrDefault().DistanceMeters;
+                TrainingSession.AverageVelocitykmh = Training[Training.Count - 1].DistanceMeters / timeFromBegening * 3.6;
 
                 _unitOfWork.TrainingSessionRepository.Update(TrainingSession);
                 _unitOfWork.Save();
