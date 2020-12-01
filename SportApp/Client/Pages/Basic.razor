@@ -23,10 +23,10 @@
 
 @code {
 
-    [Parameter]
-    public int trainingId { get; set; }
-    [Parameter]
-    public EventCallback<int> trainingIdChanged { get; set; }
+        [Parameter]
+        public int trainingId { get; set; }
+        [Parameter]
+        public EventCallback<int> trainingIdChanged { get; set; }
 
 
     private LineConfig _config;
@@ -57,33 +57,27 @@
                 Scales = new Scales
                 {
                     XAxes = new List<CartesianAxis>
-{
-                        new LinearCartesianAxis
+                    {
+                        new TimeAxis
                         {
-                            ScaleLabel = new ScaleLabel
-                            {
-                                Display = true,
-                                LabelString = "Month"                                
-                            }
+                            Bounds = ScaleBound.Data,
                         }
                     },
-                    YAxes = new List<CartesianAxis>
-{
-                        new LinearCartesianAxis
+                    YAxes = new List<CartesianAxis> {
+                                                new LinearCartesianAxis
                         {
                             ScaleLabel = new ScaleLabel
                             {
                                 Display = true,
-                                LabelString = "Calories burnt/min"
+                                LabelString = "kcal/min"
                             }
                         }
                     }
                 }
             }
         };
-        List<Point> s = new List<Point>();
-
-        IDataset<Point> dataset1 = new LineDataset<Point>(s)
+        List<TimePoint> s = new List<TimePoint>();
+        IDataset<TimePoint> dataset1 = new LineDataset<TimePoint>(s)
         {
             Label = "Calories burnt",
             BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
@@ -97,32 +91,33 @@
         };
 
         _config.Data.Datasets.Add(dataset1);
-        Update(trainingId);
+        //Update(trainingId);
     }
 
 
-    IDataset<Point> dataset1;
+    IDataset<TimePoint> dataset1;
 
-    public async void Update(int trainingId)
+    public async void Update(int trainingId, DateTime startingTime)
     {
-        dataset1 = (IDataset<Point>)_config.Data.Datasets[0];
+        dataset1 = (IDataset<TimePoint>)_config.Data.Datasets[0];
         dataset1.Clear();
 
         List<CaloriesGraph> calories = await LocalActivityServices.GetCalories(trainingId);
 
-        calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
-
-
-        double PreviousTime = 0;
-        foreach (var y in calories)
+        if (calories.Count == 1)
         {
-            if (y.Calories != 0)
-            {
-                dataset1.Add((new Point((double)y.Time, y.Calories)));
-                //dataset1.Add((new Point((double)y.Time, y.Calories)));
-                PreviousTime = y.Time;
-            }
+            dataset1.Add((new TimePoint(startingTime, calories[0].Calories)));
+            dataset1.Add((new TimePoint(startingTime.AddSeconds(calories[0].Time), calories[0].Calories)));
+
         }
+        else
+        {
+            calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
+
+            foreach (var y in calories)
+                dataset1.Add((new TimePoint(startingTime.AddSeconds(y.Time), y.Calories)));
+        }
+
 
         _config.Data.Datasets[0] = dataset1;
 

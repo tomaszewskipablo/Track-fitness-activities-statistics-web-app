@@ -60,6 +60,8 @@
 </MatTable>
 
 
+<MatIconButton Icon="delete" @onclick="DeleteRow"> </MatIconButton>
+
 
 @code {
     string token;
@@ -94,7 +96,7 @@
         TrainingList = await LocalActivityServices.GetTrainingSession(UserId);
 
         if (TrainingList.Length > 0)
-            basic.Update(TrainingList[0].Id);
+            basic.Update(TrainingList[0].Id, TrainingList[0].StartingTime);
         SortData(null);
 
         StateHasChanged();
@@ -151,9 +153,15 @@
         else
         {
             trainingId = ((TrainingSessionDTO)row).Id;
-            basic.Update(trainingId);
+            DateTime trainingTime = ((TrainingSessionDTO)row).StartingTime;
+            basic.Update(trainingId, trainingTime);
             this.StateHasChanged();
         }
+    }
+
+    void DeleteRow()
+    {
+        Console.WriteLine(trainingId);
     }
 
     TrainingSessionDTO[] sortedData = null;
