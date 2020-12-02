@@ -48,7 +48,7 @@
         </MatSelectValue>
     }
     <p>
-        <MatButton Outlined="true" @onclick="Upload">Upload</MatButton>
+        <MatButton Outlined="true" Disabled="@uploadDisabled" @onclick="Upload">Upload</MatButton>
     </p>
 </div>
 
@@ -64,6 +64,7 @@
     SportDTOCombobox[] Sports;
     private string _statusClass;
     private string _errorMessage;
+    bool uploadDisabled = false;
     int trainingId = 0;
     bool progress = false;
     bool close = false;
@@ -152,6 +153,7 @@
 
     async void Upload()
     {
+        uploadDisabled = true;
         if (activity != null)
         {
             if (SportId > 0)
@@ -163,6 +165,8 @@
                 {
                     _errorMessage = "You have choosen wrong sport type or uploaded file is damaged";
                     _statusClass = "alert-danger";
+                    uploadDisabled = false;
+                    StateHasChanged();
                     return;
                 }
 
@@ -180,6 +184,6 @@
             _errorMessage = "Upload training file";
             _statusClass = "alert-danger";
         }
-
+        uploadDisabled = false;
     }
 }

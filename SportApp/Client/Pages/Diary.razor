@@ -59,9 +59,9 @@
     </MatTableRow>
 </MatTable>
 
-
-<MatIconButton Icon="delete" @onclick="DeleteRow"> </MatIconButton>
-
+<p style="margin-top:10x">
+    <MatIconButton Icon="delete" @onclick="DeleteRow"> </MatIconButton><div class="alert @_statusClass">@_errorMessage</div>
+</p>
 
 @code {
     string token;
@@ -69,7 +69,6 @@
 
     Basic basic;
 
-    List<TrainingSessionDTO> TrainingListA;
     TrainingSessionDTO[] TrainingList;
     private string _statusClass;
     private string _errorMessage;
@@ -154,18 +153,28 @@
             trainingId = ((TrainingSessionDTO)row).Id;
             DateTime trainingTime = ((TrainingSessionDTO)row).StartingTime;
             basic.Update(trainingId, trainingTime);
+            _errorMessage = "";
+            _statusClass = "";
             this.StateHasChanged();
         }
     }
 
     void DeleteRow()
     {
-        LocalActivityServices.DeleteTrainingSession(trainingId);
         int id = TrainingList.FindIndex(x => x.Id == trainingId);
+        if (id == -1) // error
+        {
+            _errorMessage = "Choose activity to be deleted";
+            _statusClass = "alert-danger";
+            return;
+        }
+
+
+        LocalActivityServices.DeleteTrainingSession(trainingId);
         TrainingList = TrainingList.Where((source, index) => index != id).ToArray();
 
         SortData(null);
-        if (id==0)
+        if (id == 0)
             basic.Update(TrainingList[0].Id, TrainingList[0].StartingTime);
 
         StateHasChanged();
