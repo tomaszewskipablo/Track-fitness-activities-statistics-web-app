@@ -5,6 +5,8 @@
 @using System.IO;
 @using SportApp.Shared.ViewModel;
 @using SportApp.Client.MetCalculation;
+@using SportApp.Client.Components;
+@using SportApp.Client.Helpers
 
 @inject SportApp.Client.LoginLogic.LoginState LoginState
 @inject NavigationManager NavigationManager
@@ -66,11 +68,12 @@
     </p>
 </div>
 
-
+<PieChart  @ref="pieChart"></PieChart>
 
 
 
 @code {
+    PieChart pieChart;
     string token;
     int id;
     UserDTO User = new UserDTO();
@@ -172,6 +175,8 @@
             selectedGender.Label = "Male";
         else
             selectedGender.Label = "Female";
+
+        DrawPieChart();
     }
 
     void GenderChanged()
@@ -189,5 +194,45 @@
     void Save()
     {
         http.PostAsJsonAsync<UserDTO>("/Login/update", User);
+    }
+
+    async void DrawPieChart()
+    {
+        var TrainingSessions = await LocalActivityServices.GetTrainingSession(id);
+
+
+        if (TrainingSessions.Length == 0)
+            return;
+
+        var list = new List<PieChartData>();
+        list.Add(new PieChartData(TrainingSessions[0].SportName));
+        bool occure=false;
+        foreach (var item in TrainingSessions)
+        {
+            foreach (var elem in list.ToList())
+            {
+                if (item.SportName == elem.Sport)
+                {
+                    elem.Value++;
+                    occure = true;
+                    break;
+                }
+            }
+            if (!occure)
+                list.Add(new PieChartData(1,item.SportName));
+            else
+                occure = false;
+        }
+
+        string[] color = new string[list.Count];
+        int[] s = new int[list.Count];
+        for (int i = 0; i < list.Count; i++)
+        {
+            color[i] = list[i].Sport;
+            s[i] = list[i].Value;
+        }
+        //string[] color = new[] { "Biking", "Running", "Walking", "Swimming", "Resistance Training", "Squash" };
+        //int[] s = new[] { 2, 3, 8, 64, 32 };
+        pieChart.Update(color, s);
     }
 }
