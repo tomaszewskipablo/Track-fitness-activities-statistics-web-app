@@ -59,6 +59,15 @@ namespace Common.DAL
             Delete(entityToDelete);
         }
 
+        public virtual void Delete(Expression<Func<TEntity, bool>> predicate)
+        {
+            IQueryable<TEntity> query = DbSet.Where(predicate).AsQueryable();
+            foreach (TEntity obj in query)
+            {
+                DbSet.Remove(obj);
+            }
+        }
+
         public virtual void Delete(TEntity entityToDelete)
         {
             if (Context.Entry(entityToDelete).State == Microsoft.EntityFrameworkCore.EntityState.Detached)

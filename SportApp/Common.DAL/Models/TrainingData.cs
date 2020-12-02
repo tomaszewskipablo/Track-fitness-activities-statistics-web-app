@@ -11,7 +11,7 @@ namespace Common.DAL.Models
         public double? LongitudeDegrees { get; set; }
         public double? AltitudeMeters { get; set; }
         public double? DistanceMeters { get; set; }
-        public double? Velocitykmh { get; set; }
+        public double? Velocitykmh { get; set; } = 0;
         public double? ElevationMeters { get; set; }
         public int? HeartRateBpm { get; set; }
         public double Calories { get; set; }

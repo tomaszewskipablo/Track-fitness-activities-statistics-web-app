@@ -5,7 +5,7 @@ using System.Text;
 using SportApp.Shared.ViewModel;
 using SportApp.Shared.Authenticate;
 
-namespace SportApp.Shared.Services
+namespace SportApp.Client.IServices
 {
     public interface IActivityServices
     {

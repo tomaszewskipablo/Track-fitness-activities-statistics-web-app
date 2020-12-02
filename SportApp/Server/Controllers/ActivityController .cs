@@ -51,9 +51,16 @@ namespace SportApp.Server.Controllers
         public IActionResult GetTrainingSession(int userId)
         {
             var trainingSessions = _activityServices.GetTrainingSession(userId);
-            return Ok(trainingSessions);
-            //var dto = _mapper.Map<IEnumerable<TrainingSessionDTO>>(trainingSessions);
-            //return Ok(dto);
+            //return Ok(trainingSessions);
+            var dto = _mapper.Map<IEnumerable<TrainingSessionDTO>>(trainingSessions);
+            return Ok(dto);
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteTrainingSession")]
+        public void DeleteTrainingSession(int trainingSession)
+        {
+            _activityServices.DeleteTrainingSession(trainingSession);
         }
     }
 }

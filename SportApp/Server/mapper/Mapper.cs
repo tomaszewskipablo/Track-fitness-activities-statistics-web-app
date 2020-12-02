@@ -17,8 +17,7 @@ namespace NCR.Server.Mapper
             CreateMap<Sport,SportDTOCombobox>();
             CreateMap<Users, SignupRequest>().ForMember(x=>x.Username,opt => opt.MapFrom(src=>src.Login));
             CreateMap<SignupRequest, Users>().ForMember(x => x.Login, opt => opt.MapFrom(src => src.Username));
-            CreateMap<TrainingSession, TrainingSessionDTO>();
-                //.ForMember(x=>x.SportName, opt => opt.MapFrom(src => src.Sport.Name));
+            CreateMap<TrainingSession, TrainingSessionDTO>().ForMember(x=>x.SportName, opt => opt.MapFrom(src => src.Sport.Name));
         }
     }
 }

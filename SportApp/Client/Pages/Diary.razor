@@ -86,7 +86,6 @@
         token = await localStorage.GetItemAsync<string>("Token");
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        // needs to be automized
         if (UserId == 0)
         {
             NavigationManager.NavigateTo("/");
@@ -161,7 +160,15 @@
 
     void DeleteRow()
     {
-        Console.WriteLine(trainingId);
+        LocalActivityServices.DeleteTrainingSession(trainingId);
+        int id = TrainingList.FindIndex(x => x.Id == trainingId);
+        TrainingList = TrainingList.Where((source, index) => index != id).ToArray();
+
+        SortData(null);
+        if (id==0)
+            basic.Update(TrainingList[0].Id, TrainingList[0].StartingTime);
+
+        StateHasChanged();
     }
 
     TrainingSessionDTO[] sortedData = null;

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SportApp.Server.MetCalculation;
+using SportApp.Server.Helpers;
 
 
 namespace SportApp.Server.Services
@@ -16,6 +17,7 @@ namespace SportApp.Server.Services
         public int ProcessActivity(Activity activity);
         public List<CaloriesGraph> GetCalories(int trainingSessionId);
         public TrainingSession[] GetTrainingSession(int usernId);
+        public void DeleteTrainingSession(int trainingSession);
     }
 
     public class ActivityServices : IActivityServices
@@ -43,14 +45,7 @@ namespace SportApp.Server.Services
             double CorrectedMetcoefficent = HarrisBenedictBmr / 7.2 / Weight;
             double CorrectedMet; // CorrectedMet = MET * 3.5/CorrectedMetcoefficent
 
-            List<TrainingData> TrainingData = new List<TrainingData>();
-
             TrainingSession TrainingSession = new TrainingSession();
-
-            // TRAINING SESSION Agregacja
-            TrainingSession.DistanceMeters = 0;
-            TrainingSession.DurationSeconds = 0;
-            TrainingSession.AverageHeartRateBpm = 0;
 
             foreach (var lap in activity.Laps)
             {
@@ -58,24 +53,15 @@ namespace SportApp.Server.Services
                 TrainingSession.DistanceMeters += lap.DistanceMeters;
                 TrainingSession.AverageHeartRateBpm += lap.AverageHeartRateBpm;
             }
+
             if (TrainingSession.DistanceMeters == 0)
                 if (_unitOfWork.SportRepository.GetByID(activity.Id).IsVelocity)
-                    return -1;
+                    return -1;  // error, activity with no distance was choosen as velocity activity
 
             TrainingSession.AverageVelocitykmh = (double)(TrainingSession.DistanceMeters / TrainingSession.DurationSeconds * 3.6);
-            // TRAINING SESSION Agregacja
-
-            //double Met = _unitOfWork.MetRepository.Get(x => x.SportId == activity.Id
-            //&& x.MinSpeedkmh < TrainingSession.AverageVelocitykmh && x.Speedkmh > TrainingSession.AverageVelocitykmh)
-            //.Select(x => x.Value).FirstOrDefault();
-
             TrainingSession.SportId = activity.Id;
             TrainingSession.UserId = activity.UserId;
             TrainingSession.StartingTime = DateTime.Parse(activity.Laps[0].Tracks[0].TrackPoints[0].Timex);
-            TrainingSession.Calories = 0;
-            //CorrectedMet = Met * 3.5 / CorrectedMetcoefficent;
-
-
 
             _unitOfWork.TrainingSessionRepository.Insert(TrainingSession);
             _unitOfWork.Save();
@@ -85,39 +71,25 @@ namespace SportApp.Server.Services
             {
                 TrainingData trainingData = new TrainingData();
                 trainingData.TrainingSessionId = TrainingSession.Id;
-                trainingData.Velocitykmh = 0;
                 trainingData.Time = TrainingSession.DurationSeconds;
-                //trainingData.Calories =
+
                 double met = _unitOfWork.MetRepository.Get(x => x.SportId == activity.Id).Select(x => x.Value).FirstOrDefault();
                 CorrectedMet = met * 3.5 / CorrectedMetcoefficent;
 
                 TrainingSession.Calories = CorrectedMet * Weight * TrainingSession.DurationSeconds / 3600; // kcal = CorectedMET * kg * h
-                trainingData.Calories = CorrectedMet * Weight / 60; // average for minute
+                trainingData.Calories = CorrectedMet * Weight / 60; // average kcal/minute
                 _unitOfWork.TrainingDataRepository.Insert(trainingData);
                 _unitOfWork.TrainingSessionRepository.Update(TrainingSession);
                 _unitOfWork.Save();
             }
             else
             {
-                List<TrackPoint> Training = new List<TrackPoint>();
-
-                foreach (var lap in activity.Laps)
-                {
-                    foreach (var track in lap.Tracks)
-                    {
-                        foreach (var trackPoint in track.TrackPoints)
-                        {
-                            Training.Add(trackPoint);
-                        }
-                    }
-                }
+                List<TrackPoint> Training = StaticMethods.LapsToTrackPoints(activity);
 
                 if (Training.Count < 1)                    
                         return -1;
 
                 int trackDuration = (int)Training.Count / 100;   // co ile pomiarów wpis do bazy
-                //if (Training.Count < trackDuration)   // jesli ilosc pomiarow mniejsza nic trackDuration to policzmy 2 odcinki przynajmniej
-                //    trackDuration = Training.Count / 2;
 
                 double CaloriesALL = 0;
                 double PreviousDistance = 0;
@@ -128,7 +100,7 @@ namespace SportApp.Server.Services
                 MetTable.Sort((t1, t2) => t1.Value.CompareTo(t2.Value));
 
                 int numberOfPoints = Training.Count / trackDuration;
-                int lastPeriod = 0;
+                int lastPeriod = 0; // dla ostatniej iteracji
 
                 for (int i = 1; i < numberOfPoints; i++)
                 {
@@ -180,9 +152,15 @@ namespace SportApp.Server.Services
 
         public TrainingSession[] GetTrainingSession(int usernId)
         {
-            TrainingSession[] calories = _unitOfWork.TrainingSessionRepository.Get(x => x.UserId == usernId).OrderByDescending(x => x.StartingTime).ToArray();
+            TrainingSession[] calories = _unitOfWork.TrainingSessionRepository.Get(x => x.UserId == usernId, includeProperties: "Sport").OrderByDescending(x => x.StartingTime).ToArray();
 
             return calories;
+        }
+        public void DeleteTrainingSession(int trainingSession)
+        {
+            _unitOfWork.TrainingSessionRepository.Delete(trainingSession);
+            _unitOfWork.TrainingDataRepository.Delete(x=>x.TrainingSessionId == trainingSession);
+            _unitOfWork.Save();
         }
     }
 }
