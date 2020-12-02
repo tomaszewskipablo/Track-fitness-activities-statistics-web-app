@@ -4,7 +4,7 @@
 @using ChartJs.Blazor.PieChart
 
 
-<Chart Config="_config" @ref="_piechart"></Chart>
+<Chart Config="_config" @ref="_piechart" Height="200"></Chart>
 
 @code{
     private Chart _piechart;
@@ -20,15 +20,10 @@
                 Title = new OptionsTitle
                 {
                     Display = true,
-                    Text = "ChartJs.Blazor Pie Chart"
+                    Text = ""
                 }
             }
         };
-
-        //foreach (string color in new[] { "Biking", "Running", "Walking", "Swimming", "Resistance Training" })
-        //{
-        //    _config.Data.Labels.Add(color);
-        //}
 
         PieDataset<int> dataset = new PieDataset<int>()
         {
@@ -42,17 +37,12 @@
         };
 
         _config.Data.Datasets.Add(dataset);
-        //string[] color = new[] { "Biking", "Running", "Walking", "Swimming", "Resistance Training" };
-        //int[] s = new[] { 2, 3, 8, 0, 32 };
-        //Update(color, s);
     }
     PieDataset<int> dataset;
 
 
-    public void Update(string[] colorTable, int [] s)
+    public void Update(string[] colorTable, int [] values, string title)
     {
-        //_config.Data.Datasets.Clear();
-
         foreach (string color in colorTable)
         {
             _config.Data.Labels.Add(color);
@@ -60,7 +50,7 @@
 
         _config.Data.Datasets.Clear();
 
-        PieDataset<int> dataset = new PieDataset<int>(s)
+        PieDataset<int> dataset = new PieDataset<int>(values)
         {
             BackgroundColor = new[]
             {
@@ -70,41 +60,18 @@
             ColorUtil.ColorHexString(54, 162, 235), // Slice 4 aka "Blue"
             ColorUtil.ColorHexString(21, 212, 192), // 
             ColorUtil.ColorHexString(154, 62, 25), // 
+            ColorUtil.ColorHexString(160, 160, 192), // 
+            ColorUtil.ColorHexString(30, 200, 25), // 
+            ColorUtil.ColorHexString(221, 112, 192), // 
+            ColorUtil.ColorHexString(59, 162, 89), // 
         }
         };
 
+        _config.Options.Title.Text = title;
+
         _config.Data.Datasets.Add(dataset);
-
+        
         _piechart.Update();
-        //dataset = (piedataset<int>)_config.data.datasets[0];
-        //dataset.clear();
-
-        //trainingsessiondto[] sessions = await localactivityservices.gettrainingsession(1);
-
-        //s[0] = 3;
-        //s[1] = 4;
-        //s[2] = 3;
-        //s[3] = 4;
-
-        //_config.data.datasets.add(dataset);
-
-
-        //foreach (var item in sessions)
-        //{
-        //    if (item.id == 1) // cycling
-        //        dataset.data[0] += item.calories;
-        //}
-        //calories.sort((t1, t2) => t1.time.compareto(t2.time));
-
-        //foreach (var y in calories)
-        //    dataset1.add((new timepoint(startingtime.addseconds(y.time), y.calories)));
-
-
-
-        //_config.data.datasets[0] = dataset1;
-
-        //statehaschanged();
-        //_chart.update();
     }
 
 }

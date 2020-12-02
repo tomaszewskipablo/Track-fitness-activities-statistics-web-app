@@ -68,12 +68,20 @@
     </p>
 </div>
 
-<PieChart  @ref="pieChart"></PieChart>
+<div class="row">
+    <div class="col-6"><PieChart @ref="pieChart"></PieChart></div>
+    <div class="col-6"><PieChart @ref="pieChartCalories"></PieChart></div>    
+</div>
+
+
+
 
 
 
 @code {
     PieChart pieChart;
+    PieChart pieChartCalories;
+
     string token;
     int id;
     UserDTO User = new UserDTO();
@@ -206,7 +214,7 @@
 
         var list = new List<PieChartData>();
         list.Add(new PieChartData(TrainingSessions[0].SportName));
-        bool occure=false;
+        bool occure = false;
         foreach (var item in TrainingSessions)
         {
             foreach (var elem in list.ToList())
@@ -214,25 +222,30 @@
                 if (item.SportName == elem.Sport)
                 {
                     elem.Value++;
+                    elem.Calories += (int)item.Calories;
                     occure = true;
                     break;
                 }
             }
             if (!occure)
-                list.Add(new PieChartData(1,item.SportName));
+            {
+                list.Add(new PieChartData(1, (int)item.Calories, item.SportName));
+            }
             else
                 occure = false;
         }
 
         string[] color = new string[list.Count];
-        int[] s = new int[list.Count];
+        int[] numberOfActivities = new int[list.Count];
+        int[] calories = new int[list.Count];
         for (int i = 0; i < list.Count; i++)
         {
             color[i] = list[i].Sport;
-            s[i] = list[i].Value;
+            numberOfActivities[i] = list[i].Value;
+            calories[i] = list[i].Calories;
         }
-        //string[] color = new[] { "Biking", "Running", "Walking", "Swimming", "Resistance Training", "Squash" };
-        //int[] s = new[] { 2, 3, 8, 64, 32 };
-        pieChart.Update(color, s);
+
+        pieChart.Update(color, numberOfActivities, "Activities type number");
+        pieChartCalories.Update(color, calories, "Calories per activity type");
     }
 }
