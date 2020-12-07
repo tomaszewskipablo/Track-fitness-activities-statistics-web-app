@@ -80,7 +80,6 @@
         token = await localStorage.GetItemAsync<string>("Token");
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        // needs to be automized
         if (UserId == 0)
         {
             NavigationManager.NavigateTo("/");

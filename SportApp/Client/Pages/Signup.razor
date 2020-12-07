@@ -39,10 +39,9 @@
             </p>
 
             <p>
-                Optional fields:
+                Optional field:
                 <br /><br />
-                <MatTextField @bind-Value="@Hrmax" Label="Heart Rate max" Outlined="true" Icon="short_text"></MatTextField>
-                <MatTextField @bind-Value="@AverageCalories" Label="Average calories per day" Outlined="true" Icon="show_chart"></MatTextField>
+                <MatTextField @bind-Value="@Hrmax" Label="Heart Rate max" Outlined="true" Icon="short_text"></MatTextField>                
             </p>
         </div>
         <div class="col-lg-5">
@@ -80,7 +79,7 @@
     private int _height;
     private int _weight;
     private int _hrmax;
-    private int _averageCalories;
+    
     public DateTime DateOfBirth { get; set; }
 
     public string UserName
@@ -166,16 +165,6 @@
         }
     }
 
-    public int AverageCalories
-    {
-        get => _averageCalories;
-        set
-        {
-            _averageCalories = value;
-            this.StateHasChanged();
-        }
-    }
-
     private void KeyWasPressed(KeyboardEventArgs args)
     {
 
@@ -242,7 +231,6 @@
         log_data.Heightcm = Height;
         log_data.Weightkg = Weight;
         log_data.Hrmax = Hrmax;
-        log_data.AverageCalories = AverageCalories;
         if (selectedGender?.Label == "Male")
             log_data.IsMan = true;
         else

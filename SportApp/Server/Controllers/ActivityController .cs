@@ -21,15 +21,6 @@ namespace SportApp.Server.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
-        [HttpPost("TrainingSession")]
-        public void RetrieveTrainingSession([FromBody] Activity activity)
-        {
-            TrainingSession TrainingSession =  new TrainingSession();
-            _activityServices.PostActivityStats(TrainingSession);
-            //var dto = _mapper.Map<IEnumerable<UserDTO>>(personnelTable);
-            //return Ok(dto);
-        }
 
         [Authorize]
         [HttpPost("Process")]
@@ -51,7 +42,6 @@ namespace SportApp.Server.Controllers
         public IActionResult GetTrainingSession(int userId)
         {
             var trainingSessions = _activityServices.GetTrainingSession(userId);
-            //return Ok(trainingSessions);
             var dto = _mapper.Map<IEnumerable<TrainingSessionDTO>>(trainingSessions);
             return Ok(dto);
         }

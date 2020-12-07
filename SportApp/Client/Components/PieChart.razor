@@ -1,7 +1,4 @@
-﻿@using SportApp.Client.IServices
-@using SportApp.Shared.ViewModel;
-@using SportApp.Client.Services;
-@using ChartJs.Blazor.PieChart
+﻿@using ChartJs.Blazor.PieChart
 
 
 <Chart Config="_config" @ref="_piechart" Height="200"></Chart>
@@ -54,23 +51,31 @@
         {
             BackgroundColor = new[]
             {
-            ColorUtil.ColorHexString(255, 99, 132), // Slice 1 aka "Red"
-            ColorUtil.ColorHexString(255, 205, 86), // Slice 2 aka "Yellow"
-            ColorUtil.ColorHexString(75, 192, 192), // Slice 3 aka "Green"
-            ColorUtil.ColorHexString(54, 162, 235), // Slice 4 aka "Blue"
-            ColorUtil.ColorHexString(21, 212, 192), // 
-            ColorUtil.ColorHexString(154, 62, 25), // 
-            ColorUtil.ColorHexString(160, 160, 192), // 
-            ColorUtil.ColorHexString(30, 200, 25), // 
-            ColorUtil.ColorHexString(221, 112, 192), // 
-            ColorUtil.ColorHexString(59, 162, 89), // 
+            ColorUtil.ColorHexString(255, 99, 132),
+            ColorUtil.ColorHexString(255, 205, 86),
+            ColorUtil.ColorHexString(75, 192, 192),
+            ColorUtil.ColorHexString(54, 162, 235),
+            ColorUtil.ColorHexString(21, 212, 192),
+            ColorUtil.ColorHexString(154, 62, 25),
+            ColorUtil.ColorHexString(160, 160, 192),
+            ColorUtil.ColorHexString(30, 200, 25),
+            ColorUtil.ColorHexString(221, 112, 192),
+            ColorUtil.ColorHexString(59, 162, 89),
+            ColorUtil.ColorHexString(243, 100, 192),
+            ColorUtil.ColorHexString(254, 16, 35),
+            ColorUtil.ColorHexString(121, 212, 250),
+            ColorUtil.ColorHexString(100, 130, 130),
+            ColorUtil.ColorHexString(250, 250, 25),
+            ColorUtil.ColorHexString(22, 222, 222),
+            ColorUtil.ColorHexString(254, 10, 250),
+            ColorUtil.ColorHexString(100, 172, 112),
         }
         };
 
         _config.Options.Title.Text = title;
 
         _config.Data.Datasets.Add(dataset);
-        
+
         _piechart.Update();
     }
 

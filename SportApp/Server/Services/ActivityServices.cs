@@ -92,8 +92,9 @@ namespace SportApp.Server.Services
                 int trackDuration = (int)Training.Count / 100;   // co ile pomiarów wpis do bazy
 
                 double CaloriesALL = 0;
-                double PreviousDistance = 0;
+                double CoveredDistance = 0;
                 double timeFromBegening = 0;
+                double distanceFromBegening = 0;
                 double Met = 0;
                 List<TrainingData> trainingData = new List<TrainingData>();
                 List<Met> MetTable = _unitOfWork.MetRepository.Get(x => x.SportId == activity.Id).ToList();
@@ -112,9 +113,8 @@ namespace SportApp.Server.Services
 
                     double time = (DateTime.Parse(Training[i * trackDuration + lastPeriod].Timex) - DateTime.Parse(Training[(i - 1) * trackDuration].Timex)).TotalSeconds; // czas odcinka
                     timeFromBegening += time;
-                    point.Velocitykmh = (Training[i * trackDuration + lastPeriod].DistanceMeters - PreviousDistance) / time * 3.6;
-                    PreviousDistance = Training[i * trackDuration].DistanceMeters;
-
+                    point.Velocitykmh = (Training[i * trackDuration + lastPeriod].DistanceMeters - CoveredDistance) / time * 3.6;
+                    CoveredDistance = Training[i * trackDuration + lastPeriod].DistanceMeters;
 
                     MetVelocity metVelocity = new MetVelocity();
 
@@ -135,7 +135,7 @@ namespace SportApp.Server.Services
 
                 TrainingSession.Calories = CaloriesALL;
                 TrainingSession.DurationSeconds = timeFromBegening;
-                TrainingSession.AverageVelocitykmh = Training[Training.Count - 1].DistanceMeters / timeFromBegening * 3.6;
+                TrainingSession.AverageVelocitykmh = CoveredDistance / timeFromBegening * 3.6;
 
                 _unitOfWork.TrainingSessionRepository.Update(TrainingSession);
                 _unitOfWork.Save();

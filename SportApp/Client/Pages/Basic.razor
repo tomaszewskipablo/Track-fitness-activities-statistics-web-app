@@ -23,10 +23,10 @@
 
 @code {
 
-        [Parameter]
-        public int trainingId { get; set; }
-        [Parameter]
-        public EventCallback<int> trainingIdChanged { get; set; }
+    [Parameter]
+    public int trainingId { get; set; }
+    [Parameter]
+    public EventCallback<int> trainingIdChanged { get; set; }
 
 
     private LineConfig _config;
@@ -83,11 +83,13 @@
             BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
             BorderColor = ColorUtil.ColorHexString(252, 3, 3),
             Fill = FillingMode.Disabled,
+            PointStyle = PointStyle.Circle,
             PointBorderWidth = 0,
+            //PointBorderWidth = 0,
             SteppedLine = SteppedLine.False,
-            LineTension = 0.6,
-            //PointStyle = PointStyle.Line,
+            LineTension = 0.4,
             BorderWidth = 1,
+
         };
 
         _config.Data.Datasets.Add(dataset1);
@@ -113,8 +115,13 @@
         {
             calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
 
+            double prevTime=0;
             foreach (var y in calories)
+            {
+                //dataset1.Add((new TimePoint(startingTime.AddSeconds(prevTime), y.Calories)));
                 dataset1.Add((new TimePoint(startingTime.AddSeconds(y.Time), y.Calories)));
+                //prevTime = y.Time;
+            }
         }
 
 
