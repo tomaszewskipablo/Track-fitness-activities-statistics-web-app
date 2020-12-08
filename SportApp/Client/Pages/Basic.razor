@@ -92,40 +92,61 @@
 
         };
 
+        IDataset<TimePoint> dataset2 = new LineDataset<TimePoint>(s)
+        {
+            Label = "Calories burnt",
+            BackgroundColor = ColorUtil.ColorHexString(3, 252, 3),
+            BorderColor = ColorUtil.ColorHexString(3, 252, 3),
+            Fill = FillingMode.Disabled,
+            PointStyle = PointStyle.Circle,
+            PointBorderWidth = 0,
+            //PointBorderWidth = 0,
+            SteppedLine = SteppedLine.False,
+            LineTension = 0.4,
+            BorderWidth = 1,
+
+        };
+
         _config.Data.Datasets.Add(dataset1);
+        _config.Data.Datasets.Add(dataset2);
     }
 
 
     IDataset<TimePoint> dataset1;
+    IDataset<TimePoint> dataset2;
 
     public async void Update(int trainingId, DateTime startingTime)
     {
         dataset1 = (IDataset<TimePoint>)_config.Data.Datasets[0];
         dataset1.Clear();
+        dataset2 = (IDataset<TimePoint>)_config.Data.Datasets[1];
+        dataset2.Clear();
 
         List<CaloriesGraph> calories = await LocalActivityServices.GetCalories(trainingId);
 
-        if (calories.Count == 1)
-        {
-            dataset1.Add((new TimePoint(startingTime, calories[0].Calories)));
-            dataset1.Add((new TimePoint(startingTime.AddSeconds(calories[0].Time), calories[0].Calories)));
+        //if (calories.Count == 1)
+        //{
+        //    dataset1.Add((new TimePoint(startingTime, calories[0].Calories)));
+        //    dataset1.Add((new TimePoint(startingTime.AddSeconds(calories[0].Time), calories[0].Calories)));
 
-        }
-        else
-        {
-            calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
+        //}
+        //else
+        //{
+        calories.Sort((t1, t2) => t1.Time.CompareTo(t2.Time));
 
-            double prevTime=0;
-            foreach (var y in calories)
-            {
-                //dataset1.Add((new TimePoint(startingTime.AddSeconds(prevTime), y.Calories)));
-                dataset1.Add((new TimePoint(startingTime.AddSeconds(y.Time), y.Calories)));
-                //prevTime = y.Time;
-            }
+        double prevTime=0;
+        foreach (var y in calories)
+        {
+            //dataset1.Add((new TimePoint(startingTime.AddSeconds(prevTime), y.Calories)));
+            dataset1.Add((new TimePoint(startingTime.AddSeconds(y.Time), y.Calories)));
+            dataset2.Add((new TimePoint(startingTime.AddSeconds(y.Time), y.CaloriesHR)));
+            //prevTime = y.Time;
         }
+        //}
 
 
         _config.Data.Datasets[0] = dataset1;
+        _config.Data.Datasets[1] = dataset2;
 
         _chart.Update();
     }

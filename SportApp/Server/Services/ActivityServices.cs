@@ -79,6 +79,7 @@ namespace SportApp.Server.Services
                 int lastPeriod = 0; // dla ostatniej iteracji
             double CaloriesAll = 0;
 
+            TrainingSession.DurationSeconds = 0;
                 for (int i = 1; i < numberOfPoints; i++)
                 {
                     if(i == numberOfPoints - 1) // ostatnia iteracja
@@ -95,17 +96,21 @@ namespace SportApp.Server.Services
                     point.Time = TrainingSession.DurationSeconds;
                     point.TrainingSessionId = TrainingSession.Id;
 
-                    point.Calories = metCalculation.MetCalories((double)point.Velocitykmh, time);
-                    TrainingSession.Calories += (double)point.Calories;
+                    point.CaloriesMet = metCalculation.MetCalories((double)point.Velocitykmh, time);
+                    TrainingSession.Calories += (double)point.CaloriesMet;
+                point.CaloriesMet = point.CaloriesMet / time * 60; // ilosc kalorii spalana przez minute przy tej intensywności na tym odcniku czasu
 
                 if (Training[i * trackDuration + lastPeriod]?.HeartRateBpm != 0)
                 {
-                    double l = hRCalculation.HRCalories(Training[i * trackDuration + lastPeriod].HeartRateBpm, time);
-                    CaloriesAll += l;
+                    point.CaloriesHR = hRCalculation.HRCalories(Training[i * trackDuration + lastPeriod].HeartRateBpm, time);
+                    CaloriesAll += (double)point.CaloriesHR;
+                    point.CaloriesHR = point.CaloriesHR / time * 60;
                 }
-
-
-                    point.Calories = point.Calories / time * 60; // ilosc kalorii spalana przez minute przy tej intensywności na tym odcniku czasu
+                else
+                {
+                    point.CaloriesHR = 0;
+                }
+                    
                     _unitOfWork.TrainingDataRepository.Insert(point);
                 }
                 
@@ -120,7 +125,7 @@ namespace SportApp.Server.Services
 
         public List<CaloriesGraph> GetCalories(int trainingSessionId)
         {
-            List<CaloriesGraph> calories = _unitOfWork.TrainingDataRepository.Get(x => x.TrainingSessionId == trainingSessionId).Select(x => new CaloriesGraph((double)x.Calories, (double)x.Time)).ToList();
+            List<CaloriesGraph> calories = _unitOfWork.TrainingDataRepository.Get(x => x.TrainingSessionId == trainingSessionId).Select(x => new CaloriesGraph((double)x.CaloriesMet, (double)x.CaloriesHR, (double)x.Time)).ToList();
 
             return calories;
         }
