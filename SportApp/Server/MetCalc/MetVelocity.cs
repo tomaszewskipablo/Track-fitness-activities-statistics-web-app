@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.DAL.Models;
 
-namespace SportApp.Server.MetCalculation
+namespace SportApp.Server.MetCalc
 {
     public class MetVelocity
     {
         public double MetBasedOnVelocity(List<Met> metTable, double velocity)
         {
+            if (metTable.Count == 1)
+                return metTable[0].Value;
+
             if (velocity < 0.5)
                 return 2;
 
