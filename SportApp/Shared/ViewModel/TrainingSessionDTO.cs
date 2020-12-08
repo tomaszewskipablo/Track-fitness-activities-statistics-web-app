@@ -12,7 +12,8 @@ namespace SportApp.Shared.ViewModel
         public DateTime StartingTime { get; set; }
         public double DistanceMeters { get; set; }
         public double AverageVelocitykmh { get; set; }
-        public double Calories { get; set; }
+        public double CaloriesMet { get; set; }
+        public double CaloriesHR { get; set; }
         public double DurationSeconds { get; set; }
     }
 }

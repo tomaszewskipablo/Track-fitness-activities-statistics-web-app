@@ -27,7 +27,8 @@
             <MatSortHeader SortId="distanceMeters"><span style="width:180px">Distance</span></MatSortHeader>
             <MatSortHeader SortId="velocity">Velocity</MatSortHeader>
             <MatSortHeader SortId="duration">Duration</MatSortHeader>
-            <MatSortHeader SortId="calories">Calories</MatSortHeader>
+            <MatSortHeader SortId="caloriesMet">Calories Met</MatSortHeader>
+            <MatSortHeader SortId="caloriesHr">Calories HR</MatSortHeader>
         </MatSortHeaderRow>
     </MatTableHeader>
     <MatTableRow>
@@ -55,7 +56,8 @@
         <td>@Math.Round(context.DistanceMeters / 1000, 2, MidpointRounding.AwayFromZero) km</td>
         <td>@Math.Round(context.AverageVelocitykmh, 2, MidpointRounding.AwayFromZero) km/h</td>
         <td>@TimeSpan.FromSeconds((int)(context.DurationSeconds)) </td>
-        <td>@Math.Round(context.Calories) kcal</td>
+        <td>@Math.Round(context.CaloriesMet) kcal</td>
+        <td>@Math.Round(context.CaloriesHR) kcal</td>
     </MatTableRow>
 </MatTable>
 
@@ -115,8 +117,11 @@
                 case "distanceMeters":
                     comparison = (s1, s2) => s1.DistanceMeters.CompareTo(s2.DistanceMeters);
                     break;
-                case "calories":
-                    comparison = (s1, s2) => s1.Calories.CompareTo(s2.Calories);
+                case "caloriesMet":
+                    comparison = (s1, s2) => s1.CaloriesMet.CompareTo(s2.CaloriesMet);
+                    break;
+                case "caloriesHr":
+                    comparison = (s1, s2) => s1.CaloriesHR.CompareTo(s2.CaloriesHR);
                     break;
                 case "velocity":
                     comparison = (s1, s2) => s1.AverageVelocitykmh.CompareTo(s2.AverageVelocitykmh);

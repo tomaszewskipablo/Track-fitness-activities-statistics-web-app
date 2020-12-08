@@ -217,14 +217,14 @@
                 if (item.SportName == elem.Sport)
                 {
                     elem.Value++;
-                    elem.Calories += (int)item.Calories;
+                    elem.Calories += (int)item.CaloriesMet;
                     occure = true;
                     break;
                 }
             }
             if (!occure)
             {
-                list.Add(new PieChartData(1, (int)item.Calories, item.SportName));
+                list.Add(new PieChartData(1, (int)item.CaloriesMet, item.SportName));
             }
             else
                 occure = false;

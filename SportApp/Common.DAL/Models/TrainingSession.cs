@@ -19,7 +19,8 @@ namespace Common.DAL.Models
         public double? AverageVelocitykmh { get; set; } = 0;
         public int? AverageHeartRateBpm { get; set; }
         public double? ElevationMeters { get; set; }
-        public double Calories { get; set; } = 0;
+        public double CaloriesMet { get; set; } = 0;
+        public double? CaloriesHR { get; set; } = 0;
 
         public virtual Sport Sport { get; set; }
         public virtual Users User { get; set; }

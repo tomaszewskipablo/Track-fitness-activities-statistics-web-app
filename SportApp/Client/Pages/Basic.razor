@@ -79,7 +79,7 @@
         List<TimePoint> s = new List<TimePoint>();
         IDataset<TimePoint> dataset1 = new LineDataset<TimePoint>(s)
         {
-            Label = "Calories burnt",
+            Label = "Calories Met method",
             BackgroundColor = ColorUtil.ColorHexString(252, 3, 3),
             BorderColor = ColorUtil.ColorHexString(252, 3, 3),
             Fill = FillingMode.Disabled,
@@ -94,9 +94,9 @@
 
         IDataset<TimePoint> dataset2 = new LineDataset<TimePoint>(s)
         {
-            Label = "Calories burnt",
-            BackgroundColor = ColorUtil.ColorHexString(3, 252, 3),
-            BorderColor = ColorUtil.ColorHexString(3, 252, 3),
+            Label = "Calories Heart Rate method",
+            BackgroundColor = ColorUtil.ColorHexString(66, 245, 111),
+            BorderColor = ColorUtil.ColorHexString(66, 245, 111),
             Fill = FillingMode.Disabled,
             PointStyle = PointStyle.Circle,
             PointBorderWidth = 0,
@@ -138,8 +138,8 @@
         foreach (var y in calories)
         {
             //dataset1.Add((new TimePoint(startingTime.AddSeconds(prevTime), y.Calories)));
-            dataset1.Add((new TimePoint(startingTime.AddSeconds(y.Time), y.Calories)));
-            dataset2.Add((new TimePoint(startingTime.AddSeconds(y.Time), y.CaloriesHR)));
+            dataset1.Add((new TimePoint(startingTime.AddSeconds(y.Time), @Math.Round(y.Calories, 2, MidpointRounding.AwayFromZero))));
+            dataset2.Add((new TimePoint(startingTime.AddSeconds(y.Time), @Math.Round(y.CaloriesHR, 2, MidpointRounding.AwayFromZero))));
             //prevTime = y.Time;
         }
         //}

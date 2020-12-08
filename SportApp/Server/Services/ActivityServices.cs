@@ -76,8 +76,7 @@ namespace SportApp.Server.Services
                 double CoveredDistance = 0;                
 
                 int numberOfPoints = Training.Count / trackDuration;
-                int lastPeriod = 0; // dla ostatniej iteracji
-            double CaloriesAll = 0;
+                int lastPeriod = 0; // dla ostatniej iteracji            
 
             TrainingSession.DurationSeconds = 0;
                 for (int i = 1; i < numberOfPoints; i++)
@@ -97,13 +96,14 @@ namespace SportApp.Server.Services
                     point.TrainingSessionId = TrainingSession.Id;
 
                     point.CaloriesMet = metCalculation.MetCalories((double)point.Velocitykmh, time);
-                    TrainingSession.Calories += (double)point.CaloriesMet;
+                    TrainingSession.CaloriesMet += (double)point.CaloriesMet;
                 point.CaloriesMet = point.CaloriesMet / time * 60; // ilosc kalorii spalana przez minute przy tej intensywności na tym odcniku czasu
 
                 if (Training[i * trackDuration + lastPeriod]?.HeartRateBpm != 0)
                 {
-                    point.CaloriesHR = hRCalculation.HRCalories(Training[i * trackDuration + lastPeriod].HeartRateBpm, time);
-                    CaloriesAll += (double)point.CaloriesHR;
+                    double Average = StaticMethods.CountAverage(Training, (i - 1) * trackDuration + lastPeriod, i * trackDuration + lastPeriod);
+                    point.CaloriesHR = hRCalculation.HRCalories(Average, time);
+                    TrainingSession.CaloriesHR += (double)point.CaloriesHR;
                     point.CaloriesHR = point.CaloriesHR / time * 60;
                 }
                 else

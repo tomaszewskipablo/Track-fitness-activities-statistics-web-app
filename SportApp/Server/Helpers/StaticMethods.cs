@@ -24,6 +24,21 @@ namespace SportApp.Server.Helpers
             }
             return Training;
         }
-        
+        public static double CountAverage(List<TrackPoint> list, int start, int end)
+        {
+            List<TrackPoint> Training = new List<TrackPoint>();
+
+            double sum = 0;
+
+            int i;
+            for (i = start; i < end; i++)
+            {
+                sum += list[i].HeartRateBpm;
+            }
+
+            i -= start;
+            return sum/i;
+        }
+
     }
 }
