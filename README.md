@@ -57,66 +57,66 @@ In this paper, tcx file was used as a format for reading data from wearables. Fi
 After starting the application the user is shown the login page. The password is entered in a hidden form. 
 
 <p align="center">
-  <img width="80%" src="images/img1.PNG">
+  <img width="30%" src="/images/img1.jpg">
 </p>
 
 In the SignUp tab, the user can register by entering their details 
 
 <p align="center">
-  <img width="80%" src="images/img2.PNG">
+  <img width="70%" src="images/img2.jpg">
 </p>
 
 After logging into the application the user is shown the Diary tab with the table of workouts imported to the application. At the first start-up both the table and the chart of energy expenditure are empty.
 To add workouts, go to the New activity tab and upload the tcx file from the device disk - this can be done by clicking the Choose file button and selecting the appropriate file from the disk space dialog or dragging the file from the file explorer to the Choose file button.  Uploading a file is not an instant operation and should take a few seconds depending on the file size. After uploading the file you have to choose the sport you want to play by clicking on the shortcut button with an icon representing the sport, or if the sport is not among the buttons - from the drop-down list. The next step is to press the Upload button - if the file has been uploaded correctly and the sport is selected, the user will be taken to the Diary tab where the results of the file processing will be presented. If not, a message will be displayed telling the user what to do to import the file correctly. 
 
 <p align="center">
-  <img width="80%" src="images/img3.PNG">
+  <img width="70%" src="images/img3.jpg">
 </p>
 
 In the Diary tab, the user can view the workouts they have imported into the program. 
 
 <p align="center">
-  <img width="80%" src="images/img4.PNG">
+  <img width="80%" src="images/img4.jpg">
 </p>
 
 At the top of the page is a graph of energy expenditure per minute over successive time segments characterizing a given training unit, created from two methods. The curve in green represents the heart rate based method of calculating energy expenditure and the curve in red represents the MET tables. If the workout did not include heart rate information the green curve will not be displayed on the graph. By clicking on the chart legend buttons, you can turn the visibility of the curves off or on. Changes in visibility cause the graph to scale to the currently displayed data.
 
 <p align="center">
-  <img width="80%" src="images/img5.PNG">
+  <img width="80%" src="images/img5.jpg">
 </p>
 
 Below the graph is a table with rows representing training units. The row shows the sport type, start time, distance covered, speed, duration and the calculated MET and HR value. You can sort the tables by each attribute by clicking on the corresponding heading. A training session can be deleted by clicking the trash can symbol in the lower left corner. The table also implements pagination.
 
 <p align="center">
-  <img width="80%" src="images/img6.PNG">
+  <img width="80%" src="images/img6.jpg">
 </p>
 
 The Profiles tab provides a mechanism for editing user data. In the top panel, the user can modify the first name, last name and email address data. In the Biometrical data panel the user can modify the data of height, weight, gender and date of birth. On this basis, resting energy expenditure is calculated, i.e., the number of calories required to maintain basic life functions during the day. The result is presented in the blue box below. 
 
 <p align="center">
-  <img width="80%" src="images/img7.PNG">
+  <img width="80%" src="images/img7.jpg">
 </p>
 
 <p align="center">
-  <img width="80%" src="images/img8.PNG">
+  <img width="80%" src="images/img8.jgp">
 </p>
 
 At the bottom of the panel three pie charts are presented. The first graph from the left shows how many training sessions of a given type have been imported to the program by the user. The middle graph shows the energy expenditure for each type of physical activity calculated based on the MET method, and the graph on the right shows the energy expenditure based on the HR method. 
 
 <p align="center">
-  <img width="80%" src="images/img9.PNG">
+  <img width="80%" src="images/img9.jpg">
 </p>
 
 ## Database structure
 The database structure is built with five tables. The Users table represents the user, containing the data necessary to log into the system and the user's biometric data required to calculate energy expenditure. This table has a one-to-many relationship to the TrainingSession table, which represents the training session performed by the user. It contains the training data and a foreign key pointing to the Sport table, which contains information about what type of sport the training session belongs to. In addition to information about the type of sport, the table also contains information about whether the sport involves covering a distance, and thus the user's speed. The Met table assigns MET values to each sport for different speeds, and if a sport has no speed, it has a single value for the entire sport. The TrainingData table is a table containing data from successive training episodes - it has a many-to-one relationship with the TrainginSession table.
 
 <p align="center">
-  <img width="80%" src="images/img10.PNG">
+  <img width="70%" src="images/img10.jpg">
 </p>
 
 ## Endpoints
 
 <p align="center">
-  <img width="80%" src="images/img11.PNG">
+  <img width="30%" src="images/img11.jpg">
 </p>
 
